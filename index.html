@@ -131,13 +131,14 @@ tfoot td { font-weight: 700; border-top: 1px solid var(--line); border-bottom: 0
 #tip .r span:first-child { color: var(--fg2); }
 footer { color: var(--muted); font-size: 12px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.brandrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.brand{font-weight:800;font-size:15px;letter-spacing:.02em;color:var(--accent)}
 .top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 </style>
 
 <div class="wrap">
   <header class="top">
     <div>
-      <span class="badge">Учебные данные</span>
+      <div class="brandrow"><span class="brand">ShopPulse</span><span class="badge">Учебные данные</span></div>
       <h1 id="title">Отчёт о реализации ДомУют</h1>
       <div class="sub" id="subtitle">—</div>
     </div>
@@ -698,7 +699,7 @@ const TITLE0 = document.title;
 function applyStatic() {
   STATIC.forEach(el => { el.textContent = T(el.dataset.t); });
   ARIA.forEach(el => el.setAttribute('aria-label', T(el.dataset.ta)));
-  document.title = T(TITLE0);
+  document.title = 'ShopPulse · ' + T(TITLE0);
   document.documentElement.lang = LANG;
   document.querySelectorAll('#fLang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.l === LANG));
 }

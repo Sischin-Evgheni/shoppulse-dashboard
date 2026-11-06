@@ -1,4 +1,4 @@
-# Marketplace Sales Dashboard
+# ShopPulse – Verkaufsanalyse-Dashboard
 
 Interaktives Verkaufs-Dashboard für Marktplatz-Händler (z. B. Wildberries / Ozon).
 Aus einem wöchentlichen Verkaufsbericht (Excel, über 2.000 Einzelbuchungen) wird eine übersichtliche Auswertung erstellt.
@@ -20,7 +20,7 @@ Aus einem wöchentlichen Verkaufsbericht (Excel, über 2.000 Einzelbuchungen) wi
 - Aufbereitung der Excel-Rohdaten zu einem kompakten Datensatz (eingebettet als JSON)
 - Wiederholbarer Ablauf mit KI-Unterstützung: neuer Wochenbericht rein → aktualisiertes Dashboard raus
 
-**Live-Demo:** https://sischin-evgheni.github.io/marketplace-sales-dashboard/
+**Live-Demo:** https://sischin-evgheni.github.io/shoppulse-dashboard/
 
 ## Starten
 `index.html` im Browser öffnen.
