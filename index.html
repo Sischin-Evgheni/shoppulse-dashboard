@@ -131,6 +131,7 @@ tfoot td { font-weight: 700; border-top: 1px solid var(--line); border-bottom: 0
 #tip .r span:first-child { color: var(--fg2); }
 footer { color: var(--muted); font-size: 12px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+.top-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 </style>
 
 <div class="wrap">
@@ -140,7 +141,8 @@ footer { color: var(--muted); font-size: 12px; }
       <h1 id="title">Отчёт о реализации ДомУют</h1>
       <div class="sub" id="subtitle">—</div>
     </div>
-    <button id="theme" type="button" aria-label="Переключить тему">Тёмная тема</button>
+    <div class="top-actions"><div class="seg" id="fLang" role="group" aria-label="Sprache"><button type="button" data-l="de" aria-pressed="false">DE</button><button type="button" data-l="ru" aria-pressed="false">RU</button><button type="button" data-l="en" aria-pressed="false">EN</button></div>
+    <button id="theme" type="button" aria-label="Переключить тему">Тёмная тема</button></div>
   </header>
 
   <div class="filters" role="group" aria-label="Фильтры">
@@ -182,15 +184,137 @@ footer { color: var(--muted); font-size: 12px; }
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
 <script>
-const DATA = {"period": ["2026-10-26", "2026-11-01"], "source": "Отчёт о реализации 26.10-01.11.2026.xlsx", "rowsInSource": 2255, "skus": [{"sku": "UMB-AUTO-BLK", "name": "Зонт автомат чёрный", "cat": "Зонты"}, {"sku": "UMB-CANE-XL", "name": "Зонт-трость XL", "cat": "Зонты"}, {"sku": "TOY-BEAR-40", "name": "Плюшевый медведь 40 см", "cat": "Игрушки мягкие"}, {"sku": "TOY-BLOCK-500", "name": "Конструктор 500 деталей", "cat": "Конструкторы"}, {"sku": "MUG-CERAMIC", "name": "Кружка керамическая 350 мл", "cat": "Кружки"}, {"sku": "MUG-THERMO", "name": "Термокружка 450 мл", "cat": "Кружки"}, {"sku": "SOCK-SET-5", "name": "Носки набор 5 пар", "cat": "Носки"}, {"sku": "SOCK-WOOL-2", "name": "Носки шерстяные 2 пары", "cat": "Носки"}], "cells": [{"d": "2026-10-26", "sku": "MUG-CERAMIC", "qty": 6, "rev": 3020.8, "retQty": 0, "retSum": 0.0, "comm": 351.13, "log": 721.22, "fine": 0.0, "deliv": 7, "back": 1, "negComm": 2}, {"d": "2026-10-26", "sku": "MUG-THERMO", "qty": 16, "rev": 15088.05, "retQty": 0, "retSum": 0.0, "comm": 3017.63, "log": 1177.83, "fine": 0.0, "deliv": 16, "back": 0, "negComm": 0}, {"d": "2026-10-26", "sku": "SOCK-SET-5", "qty": 13, "rev": 3967.64, "retQty": 0, "retSum": 0.0, "comm": 991.92, "log": 4182.72, "fine": 0.0, "deliv": 34, "back": 21, "negComm": 0}, {"d": "2026-10-26", "sku": "SOCK-WOOL-2", "qty": 11, "rev": 6465.52, "retQty": 1, "retSum": 594.0, "comm": 1467.9, "log": 813.65, "fine": 0.0, "deliv": 12, "back": 1, "negComm": 0}, {"d": "2026-10-26", "sku": "TOY-BEAR-40", "qty": 20, "rev": 27013.05, "retQty": 1, "retSum": 1369.5, "comm": 5385.16, "log": 1752.17, "fine": 0.0, "deliv": 21, "back": 1, "negComm": 0}, {"d": "2026-10-26", "sku": "TOY-BLOCK-500", "qty": 13, "rev": 30721.38, "retQty": 0, "retSum": 0.0, "comm": 5837.06, "log": 1466.66, "fine": 0.0, "deliv": 14, "back": 1, "negComm": 0}, {"d": "2026-10-26", "sku": "UMB-AUTO-BLK", "qty": 17, "rev": 18379.23, "retQty": 0, "retSum": 0.0, "comm": 4227.22, "log": 1753.87, "fine": 0.0, "deliv": 21, "back": 4, "negComm": 0}, {"d": "2026-10-26", "sku": "UMB-CANE-XL", "qty": 8, "rev": 12462.16, "retQty": 1, "retSum": 1589.5, "comm": 2500.72, "log": 1414.92, "fine": 0.0, "deliv": 9, "back": 1, "negComm": 0}, {"d": "2026-10-27", "sku": "MUG-CERAMIC", "qty": 10, "rev": 5062.3, "retQty": 0, "retSum": 0.0, "comm": 503.26, "log": 1263.83, "fine": 0.0, "deliv": 12, "back": 2, "negComm": 4}, {"d": "2026-10-27", "sku": "MUG-THERMO", "qty": 12, "rev": 11305.87, "retQty": 0, "retSum": 0.0, "comm": 2261.17, "log": 1038.7, "fine": 0.0, "deliv": 13, "back": 1, "negComm": 0}, {"d": "2026-10-27", "sku": "SOCK-SET-5", "qty": 19, "rev": 5800.67, "retQty": 0, "retSum": 0.0, "comm": 1450.16, "log": 3560.87, "fine": 0.0, "deliv": 33, "back": 14, "negComm": 0}, {"d": "2026-10-27", "sku": "SOCK-WOOL-2", "qty": 19, "rev": 11114.69, "retQty": 0, "retSum": 0.0, "comm": 2778.7, "log": 1441.01, "fine": 0.0, "deliv": 21, "back": 2, "negComm": 0}, {"d": "2026-10-27", "sku": "TOY-BEAR-40", "qty": 19, "rev": 25488.22, "retQty": 0, "retSum": 0.0, "comm": 5352.53, "log": 1903.32, "fine": 0.0, "deliv": 21, "back": 2, "negComm": 0}, {"d": "2026-10-27", "sku": "TOY-BLOCK-500", "qty": 12, "rev": 28316.54, "retQty": 0, "retSum": 0.0, "comm": 5380.15, "log": 1560.06, "fine": 0.0, "deliv": 14, "back": 2, "negComm": 0}, {"d": "2026-10-27", "sku": "UMB-AUTO-BLK", "qty": 19, "rev": 20511.32, "retQty": 0, "retSum": 0.0, "comm": 4717.61, "log": 1452.19, "fine": 0.0, "deliv": 20, "back": 1, "negComm": 0}, {"d": "2026-10-27", "sku": "UMB-CANE-XL", "qty": 10, "rev": 15669.97, "retQty": 0, "retSum": 0.0, "comm": 3604.08, "log": 1768.17, "fine": 0.0, "deliv": 11, "back": 1, "negComm": 0}, {"d": "2026-10-28", "sku": "MUG-CERAMIC", "qty": 10, "rev": 5041.69, "retQty": 1, "retSum": 513.5, "comm": 655.56, "log": 1656.43, "fine": 0.0, "deliv": 14, "back": 4, "negComm": 2}, {"d": "2026-10-28", "sku": "MUG-THERMO", "qty": 23, "rev": 21566.06, "retQty": 1, "retSum": 954.0, "comm": 4122.37, "log": 1694.61, "fine": 0.0, "deliv": 23, "back": 0, "negComm": 0}, {"d": "2026-10-28", "sku": "SOCK-SET-5", "qty": 26, "rev": 7947.67, "retQty": 1, "retSum": 310.5, "comm": 1909.28, "log": 4865.19, "fine": 0.0, "deliv": 45, "back": 19, "negComm": 0}, {"d": "2026-10-28", "sku": "SOCK-WOOL-2", "qty": 19, "rev": 11130.68, "retQty": 0, "retSum": 0.0, "comm": 2782.68, "log": 1319.96, "fine": 0.0, "deliv": 20, "back": 1, "negComm": 0}, {"d": "2026-10-28", "sku": "TOY-BEAR-40", "qty": 21, "rev": 28336.43, "retQty": 0, "retSum": 0.0, "comm": 5950.64, "log": 1724.74, "fine": 0.0, "deliv": 21, "back": 0, "negComm": 0}, {"d": "2026-10-28", "sku": "TOY-BLOCK-500", "qty": 17, "rev": 40081.76, "retQty": 0, "retSum": 0.0, "comm": 7615.57, "log": 1844.74, "fine": 0.0, "deliv": 18, "back": 1, "negComm": 0}, {"d": "2026-10-28", "sku": "UMB-AUTO-BLK", "qty": 21, "rev": 22675.25, "retQty": 1, "retSum": 1095.0, "comm": 4963.44, "log": 1820.14, "fine": 0.0, "deliv": 24, "back": 3, "negComm": 0}, {"d": "2026-10-28", "sku": "UMB-CANE-XL", "qty": 8, "rev": 12600.65, "retQty": 0, "retSum": 0.0, "comm": 2898.16, "log": 1410.02, "fine": 0.0, "deliv": 9, "back": 1, "negComm": 0}, {"d": "2026-10-29", "sku": "MUG-CERAMIC", "qty": 8, "rev": 4036.84, "retQty": 0, "retSum": 0.0, "comm": 555.74, "log": 1053.83, "fine": 0.0, "deliv": 10, "back": 2, "negComm": 2}, {"d": "2026-10-29", "sku": "MUG-THERMO", "qty": 14, "rev": 13166.56, "retQty": 0, "retSum": 0.0, "comm": 2633.3, "log": 1438.09, "fine": 0.0, "deliv": 17, "back": 3, "negComm": 0}, {"d": "2026-10-29", "sku": "SOCK-SET-5", "qty": 12, "rev": 3667.31, "retQty": 0, "retSum": 0.0, "comm": 916.84, "log": 3560.92, "fine": 0.0, "deliv": 29, "back": 17, "negComm": 0}, {"d": "2026-10-29", "sku": "SOCK-WOOL-2", "qty": 10, "rev": 5862.33, "retQty": 0, "retSum": 0.0, "comm": 1465.59, "log": 914.02, "fine": 0.0, "deliv": 12, "back": 2, "negComm": 0}, {"d": "2026-10-29", "sku": "TOY-BEAR-40", "qty": 18, "rev": 24249.97, "retQty": 1, "retSum": 1369.5, "comm": 4804.87, "log": 1630.25, "fine": 0.0, "deliv": 19, "back": 1, "negComm": 0}, {"d": "2026-10-29", "sku": "TOY-BLOCK-500", "qty": 16, "rev": 37674.13, "retQty": 0, "retSum": 0.0, "comm": 7158.09, "log": 1605.11, "fine": 0.0, "deliv": 16, "back": 0, "negComm": 0}, {"d": "2026-10-29", "sku": "UMB-AUTO-BLK", "qty": 14, "rev": 15084.47, "retQty": 0, "retSum": 0.0, "comm": 3469.44, "log": 2364.91, "fine": 0.0, "deliv": 24, "back": 10, "negComm": 0}, {"d": "2026-10-29", "sku": "UMB-CANE-XL", "qty": 6, "rev": 9456.12, "retQty": 0, "retSum": 0.0, "comm": 2174.89, "log": 1706.03, "fine": 1500.0, "deliv": 9, "back": 3, "negComm": 0}, {"d": "2026-10-30", "sku": "MUG-CERAMIC", "qty": 8, "rev": 4046.97, "retQty": 0, "retSum": 0.0, "comm": 683.41, "log": 1070.71, "fine": 0.0, "deliv": 10, "back": 2, "negComm": 1}, {"d": "2026-10-30", "sku": "MUG-THERMO", "qty": 14, "rev": 13172.27, "retQty": 1, "retSum": 954.0, "comm": 2443.67, "log": 1532.14, "fine": 0.0, "deliv": 17, "back": 3, "negComm": 0}, {"d": "2026-10-30", "sku": "SOCK-SET-5", "qty": 16, "rev": 4895.17, "retQty": 0, "retSum": 0.0, "comm": 1223.83, "log": 2888.0, "fine": 0.0, "deliv": 27, "back": 11, "negComm": 0}, {"d": "2026-10-30", "sku": "SOCK-WOOL-2", "qty": 18, "rev": 10580.66, "retQty": 0, "retSum": 0.0, "comm": 2645.17, "log": 1388.36, "fine": 0.0, "deliv": 20, "back": 2, "negComm": 0}, {"d": "2026-10-30", "sku": "TOY-BEAR-40", "qty": 26, "rev": 35056.28, "retQty": 0, "retSum": 0.0, "comm": 7361.86, "log": 2515.86, "fine": 0.0, "deliv": 28, "back": 2, "negComm": 0}, {"d": "2026-10-30", "sku": "TOY-BLOCK-500", "qty": 13, "rev": 30632.93, "retQty": 0, "retSum": 0.0, "comm": 5820.27, "log": 1321.29, "fine": 0.0, "deliv": 13, "back": 0, "negComm": 0}, {"d": "2026-10-30", "sku": "UMB-AUTO-BLK", "qty": 17, "rev": 18303.37, "retQty": 0, "retSum": 0.0, "comm": 4209.8, "log": 1744.78, "fine": 0.0, "deliv": 21, "back": 4, "negComm": 0}, {"d": "2026-10-30", "sku": "UMB-CANE-XL", "qty": 3, "rev": 4720.64, "retQty": 0, "retSum": 0.0, "comm": 1085.75, "log": 1182.68, "fine": 0.0, "deliv": 6, "back": 3, "negComm": 0}, {"d": "2026-10-31", "sku": "MUG-CERAMIC", "qty": 12, "rev": 6084.83, "retQty": 0, "retSum": 0.0, "comm": 1088.89, "log": 1728.4, "fine": 0.0, "deliv": 16, "back": 4, "negComm": 1}, {"d": "2026-10-31", "sku": "MUG-THERMO", "qty": 17, "rev": 15929.39, "retQty": 0, "retSum": 0.0, "comm": 3185.92, "log": 1688.7, "fine": 0.0, "deliv": 20, "back": 3, "negComm": 0}, {"d": "2026-10-31", "sku": "SOCK-SET-5", "qty": 26, "rev": 7957.69, "retQty": 1, "retSum": 310.5, "comm": 1911.81, "log": 5095.85, "fine": 0.0, "deliv": 46, "back": 20, "negComm": 0}, {"d": "2026-10-31", "sku": "SOCK-WOOL-2", "qty": 14, "rev": 8181.92, "retQty": 1, "retSum": 594.0, "comm": 1896.98, "log": 1408.59, "fine": 0.0, "deliv": 18, "back": 4, "negComm": 0}, {"d": "2026-10-31", "sku": "TOY-BEAR-40", "qty": 26, "rev": 35085.92, "retQty": 1, "retSum": 1369.5, "comm": 7080.45, "log": 2311.04, "fine": 0.0, "deliv": 27, "back": 1, "negComm": 0}, {"d": "2026-10-31", "sku": "TOY-BLOCK-500", "qty": 18, "rev": 42402.78, "retQty": 1, "retSum": 2394.0, "comm": 7601.7, "log": 1813.54, "fine": 0.0, "deliv": 18, "back": 0, "negComm": 0}, {"d": "2026-10-31", "sku": "UMB-AUTO-BLK", "qty": 29, "rev": 31306.77, "retQty": 0, "retSum": 0.0, "comm": 7200.62, "log": 3032.77, "fine": 0.0, "deliv": 36, "back": 7, "negComm": 0}, {"d": "2026-10-31", "sku": "UMB-CANE-XL", "qty": 7, "rev": 10922.86, "retQty": 0, "retSum": 0.0, "comm": 2512.28, "log": 1792.79, "fine": 0.0, "deliv": 10, "back": 3, "negComm": 0}, {"d": "2026-11-01", "sku": "MUG-CERAMIC", "qty": 13, "rev": 6575.52, "retQty": 0, "retSum": 0.0, "comm": 1315.13, "log": 1632.18, "fine": 0.0, "deliv": 15, "back": 2, "negComm": 0}, {"d": "2026-11-01", "sku": "MUG-THERMO", "qty": 19, "rev": 17899.07, "retQty": 1, "retSum": 954.0, "comm": 3389.05, "log": 2017.56, "fine": 0.0, "deliv": 23, "back": 4, "negComm": 0}, {"d": "2026-11-01", "sku": "SOCK-SET-5", "qty": 18, "rev": 5508.2, "retQty": 1, "retSum": 310.5, "comm": 1299.41, "log": 3616.46, "fine": 0.0, "deliv": 33, "back": 15, "negComm": 0}, {"d": "2026-11-01", "sku": "SOCK-WOOL-2", "qty": 17, "rev": 9962.71, "retQty": 0, "retSum": 0.0, "comm": 2490.66, "log": 1624.31, "fine": 0.0, "deliv": 21, "back": 4, "negComm": 0}, {"d": "2026-11-01", "sku": "TOY-BEAR-40", "qty": 26, "rev": 35070.95, "retQty": 1, "retSum": 1369.5, "comm": 7077.32, "log": 2456.93, "fine": 0.0, "deliv": 28, "back": 2, "negComm": 0}, {"d": "2026-11-01", "sku": "TOY-BLOCK-500", "qty": 21, "rev": 49493.11, "retQty": 1, "retSum": 2394.0, "comm": 8948.85, "log": 2001.72, "fine": 0.0, "deliv": 21, "back": 0, "negComm": 0}, {"d": "2026-11-01", "sku": "UMB-AUTO-BLK", "qty": 34, "rev": 36574.36, "retQty": 0, "retSum": 0.0, "comm": 8412.08, "log": 2897.01, "fine": 0.0, "deliv": 39, "back": 5, "negComm": 0}, {"d": "2026-11-01", "sku": "UMB-CANE-XL", "qty": 5, "rev": 7832.95, "retQty": 0, "retSum": 0.0, "comm": 1801.58, "log": 2303.96, "fine": 0.0, "deliv": 11, "back": 6, "negComm": 0}], "general": [{"d": "2026-10-26", "item": "Платная приёмка", "sum": 2800.0}, {"d": "2026-10-26", "item": "Хранение", "sum": 2015.18}, {"d": "2026-10-27", "item": "Хранение", "sum": 2091.99}, {"d": "2026-10-28", "item": "Удержание", "sum": 4350.0}, {"d": "2026-10-28", "item": "Хранение", "sum": 1955.28}, {"d": "2026-10-29", "item": "Хранение", "sum": 1795.91}, {"d": "2026-10-30", "item": "Возмещение издержек", "sum": -1240.0}, {"d": "2026-10-30", "item": "Хранение", "sum": 2089.13}, {"d": "2026-10-31", "item": "Хранение", "sum": 1909.19}, {"d": "2026-11-01", "item": "Удержание", "sum": 12000.0}, {"d": "2026-11-01", "item": "Хранение", "sum": 1711.8}], "payout": 594203.51};
+const DATA = {"period": ["2026-10-26", "2026-11-01"], "source": "data/demo-report_2026-10-26_2026-11-01.xlsx", "rowsInSource": 2255, "skus": [{"sku": "UMB-AUTO-BLK", "name": "Зонт автомат чёрный", "cat": "Зонты"}, {"sku": "UMB-CANE-XL", "name": "Зонт-трость XL", "cat": "Зонты"}, {"sku": "TOY-BEAR-40", "name": "Плюшевый медведь 40 см", "cat": "Игрушки мягкие"}, {"sku": "TOY-BLOCK-500", "name": "Конструктор 500 деталей", "cat": "Конструкторы"}, {"sku": "MUG-CERAMIC", "name": "Кружка керамическая 350 мл", "cat": "Кружки"}, {"sku": "MUG-THERMO", "name": "Термокружка 450 мл", "cat": "Кружки"}, {"sku": "SOCK-SET-5", "name": "Носки набор 5 пар", "cat": "Носки"}, {"sku": "SOCK-WOOL-2", "name": "Носки шерстяные 2 пары", "cat": "Носки"}], "cells": [{"d": "2026-10-26", "sku": "MUG-CERAMIC", "qty": 6, "rev": 3020.8, "retQty": 0, "retSum": 0.0, "comm": 351.13, "log": 721.22, "fine": 0.0, "deliv": 7, "back": 1, "negComm": 2}, {"d": "2026-10-26", "sku": "MUG-THERMO", "qty": 16, "rev": 15088.05, "retQty": 0, "retSum": 0.0, "comm": 3017.63, "log": 1177.83, "fine": 0.0, "deliv": 16, "back": 0, "negComm": 0}, {"d": "2026-10-26", "sku": "SOCK-SET-5", "qty": 13, "rev": 3967.64, "retQty": 0, "retSum": 0.0, "comm": 991.92, "log": 4182.72, "fine": 0.0, "deliv": 34, "back": 21, "negComm": 0}, {"d": "2026-10-26", "sku": "SOCK-WOOL-2", "qty": 11, "rev": 6465.52, "retQty": 1, "retSum": 594.0, "comm": 1467.9, "log": 813.65, "fine": 0.0, "deliv": 12, "back": 1, "negComm": 0}, {"d": "2026-10-26", "sku": "TOY-BEAR-40", "qty": 20, "rev": 27013.05, "retQty": 1, "retSum": 1369.5, "comm": 5385.16, "log": 1752.17, "fine": 0.0, "deliv": 21, "back": 1, "negComm": 0}, {"d": "2026-10-26", "sku": "TOY-BLOCK-500", "qty": 13, "rev": 30721.38, "retQty": 0, "retSum": 0.0, "comm": 5837.06, "log": 1466.66, "fine": 0.0, "deliv": 14, "back": 1, "negComm": 0}, {"d": "2026-10-26", "sku": "UMB-AUTO-BLK", "qty": 17, "rev": 18379.23, "retQty": 0, "retSum": 0.0, "comm": 4227.22, "log": 1753.87, "fine": 0.0, "deliv": 21, "back": 4, "negComm": 0}, {"d": "2026-10-26", "sku": "UMB-CANE-XL", "qty": 8, "rev": 12462.16, "retQty": 1, "retSum": 1589.5, "comm": 2500.72, "log": 1414.92, "fine": 0.0, "deliv": 9, "back": 1, "negComm": 0}, {"d": "2026-10-27", "sku": "MUG-CERAMIC", "qty": 10, "rev": 5062.3, "retQty": 0, "retSum": 0.0, "comm": 503.26, "log": 1263.83, "fine": 0.0, "deliv": 12, "back": 2, "negComm": 4}, {"d": "2026-10-27", "sku": "MUG-THERMO", "qty": 12, "rev": 11305.87, "retQty": 0, "retSum": 0.0, "comm": 2261.17, "log": 1038.7, "fine": 0.0, "deliv": 13, "back": 1, "negComm": 0}, {"d": "2026-10-27", "sku": "SOCK-SET-5", "qty": 19, "rev": 5800.67, "retQty": 0, "retSum": 0.0, "comm": 1450.16, "log": 3560.87, "fine": 0.0, "deliv": 33, "back": 14, "negComm": 0}, {"d": "2026-10-27", "sku": "SOCK-WOOL-2", "qty": 19, "rev": 11114.69, "retQty": 0, "retSum": 0.0, "comm": 2778.7, "log": 1441.01, "fine": 0.0, "deliv": 21, "back": 2, "negComm": 0}, {"d": "2026-10-27", "sku": "TOY-BEAR-40", "qty": 19, "rev": 25488.22, "retQty": 0, "retSum": 0.0, "comm": 5352.53, "log": 1903.32, "fine": 0.0, "deliv": 21, "back": 2, "negComm": 0}, {"d": "2026-10-27", "sku": "TOY-BLOCK-500", "qty": 12, "rev": 28316.54, "retQty": 0, "retSum": 0.0, "comm": 5380.15, "log": 1560.06, "fine": 0.0, "deliv": 14, "back": 2, "negComm": 0}, {"d": "2026-10-27", "sku": "UMB-AUTO-BLK", "qty": 19, "rev": 20511.32, "retQty": 0, "retSum": 0.0, "comm": 4717.61, "log": 1452.19, "fine": 0.0, "deliv": 20, "back": 1, "negComm": 0}, {"d": "2026-10-27", "sku": "UMB-CANE-XL", "qty": 10, "rev": 15669.97, "retQty": 0, "retSum": 0.0, "comm": 3604.08, "log": 1768.17, "fine": 0.0, "deliv": 11, "back": 1, "negComm": 0}, {"d": "2026-10-28", "sku": "MUG-CERAMIC", "qty": 10, "rev": 5041.69, "retQty": 1, "retSum": 513.5, "comm": 655.56, "log": 1656.43, "fine": 0.0, "deliv": 14, "back": 4, "negComm": 2}, {"d": "2026-10-28", "sku": "MUG-THERMO", "qty": 23, "rev": 21566.06, "retQty": 1, "retSum": 954.0, "comm": 4122.37, "log": 1694.61, "fine": 0.0, "deliv": 23, "back": 0, "negComm": 0}, {"d": "2026-10-28", "sku": "SOCK-SET-5", "qty": 26, "rev": 7947.67, "retQty": 1, "retSum": 310.5, "comm": 1909.28, "log": 4865.19, "fine": 0.0, "deliv": 45, "back": 19, "negComm": 0}, {"d": "2026-10-28", "sku": "SOCK-WOOL-2", "qty": 19, "rev": 11130.68, "retQty": 0, "retSum": 0.0, "comm": 2782.68, "log": 1319.96, "fine": 0.0, "deliv": 20, "back": 1, "negComm": 0}, {"d": "2026-10-28", "sku": "TOY-BEAR-40", "qty": 21, "rev": 28336.43, "retQty": 0, "retSum": 0.0, "comm": 5950.64, "log": 1724.74, "fine": 0.0, "deliv": 21, "back": 0, "negComm": 0}, {"d": "2026-10-28", "sku": "TOY-BLOCK-500", "qty": 17, "rev": 40081.76, "retQty": 0, "retSum": 0.0, "comm": 7615.57, "log": 1844.74, "fine": 0.0, "deliv": 18, "back": 1, "negComm": 0}, {"d": "2026-10-28", "sku": "UMB-AUTO-BLK", "qty": 21, "rev": 22675.25, "retQty": 1, "retSum": 1095.0, "comm": 4963.44, "log": 1820.14, "fine": 0.0, "deliv": 24, "back": 3, "negComm": 0}, {"d": "2026-10-28", "sku": "UMB-CANE-XL", "qty": 8, "rev": 12600.65, "retQty": 0, "retSum": 0.0, "comm": 2898.16, "log": 1410.02, "fine": 0.0, "deliv": 9, "back": 1, "negComm": 0}, {"d": "2026-10-29", "sku": "MUG-CERAMIC", "qty": 8, "rev": 4036.84, "retQty": 0, "retSum": 0.0, "comm": 555.74, "log": 1053.83, "fine": 0.0, "deliv": 10, "back": 2, "negComm": 2}, {"d": "2026-10-29", "sku": "MUG-THERMO", "qty": 14, "rev": 13166.56, "retQty": 0, "retSum": 0.0, "comm": 2633.3, "log": 1438.09, "fine": 0.0, "deliv": 17, "back": 3, "negComm": 0}, {"d": "2026-10-29", "sku": "SOCK-SET-5", "qty": 12, "rev": 3667.31, "retQty": 0, "retSum": 0.0, "comm": 916.84, "log": 3560.92, "fine": 0.0, "deliv": 29, "back": 17, "negComm": 0}, {"d": "2026-10-29", "sku": "SOCK-WOOL-2", "qty": 10, "rev": 5862.33, "retQty": 0, "retSum": 0.0, "comm": 1465.59, "log": 914.02, "fine": 0.0, "deliv": 12, "back": 2, "negComm": 0}, {"d": "2026-10-29", "sku": "TOY-BEAR-40", "qty": 18, "rev": 24249.97, "retQty": 1, "retSum": 1369.5, "comm": 4804.87, "log": 1630.25, "fine": 0.0, "deliv": 19, "back": 1, "negComm": 0}, {"d": "2026-10-29", "sku": "TOY-BLOCK-500", "qty": 16, "rev": 37674.13, "retQty": 0, "retSum": 0.0, "comm": 7158.09, "log": 1605.11, "fine": 0.0, "deliv": 16, "back": 0, "negComm": 0}, {"d": "2026-10-29", "sku": "UMB-AUTO-BLK", "qty": 14, "rev": 15084.47, "retQty": 0, "retSum": 0.0, "comm": 3469.44, "log": 2364.91, "fine": 0.0, "deliv": 24, "back": 10, "negComm": 0}, {"d": "2026-10-29", "sku": "UMB-CANE-XL", "qty": 6, "rev": 9456.12, "retQty": 0, "retSum": 0.0, "comm": 2174.89, "log": 1706.03, "fine": 1500.0, "deliv": 9, "back": 3, "negComm": 0}, {"d": "2026-10-30", "sku": "MUG-CERAMIC", "qty": 8, "rev": 4046.97, "retQty": 0, "retSum": 0.0, "comm": 683.41, "log": 1070.71, "fine": 0.0, "deliv": 10, "back": 2, "negComm": 1}, {"d": "2026-10-30", "sku": "MUG-THERMO", "qty": 14, "rev": 13172.27, "retQty": 1, "retSum": 954.0, "comm": 2443.67, "log": 1532.14, "fine": 0.0, "deliv": 17, "back": 3, "negComm": 0}, {"d": "2026-10-30", "sku": "SOCK-SET-5", "qty": 16, "rev": 4895.17, "retQty": 0, "retSum": 0.0, "comm": 1223.83, "log": 2888.0, "fine": 0.0, "deliv": 27, "back": 11, "negComm": 0}, {"d": "2026-10-30", "sku": "SOCK-WOOL-2", "qty": 18, "rev": 10580.66, "retQty": 0, "retSum": 0.0, "comm": 2645.17, "log": 1388.36, "fine": 0.0, "deliv": 20, "back": 2, "negComm": 0}, {"d": "2026-10-30", "sku": "TOY-BEAR-40", "qty": 26, "rev": 35056.28, "retQty": 0, "retSum": 0.0, "comm": 7361.86, "log": 2515.86, "fine": 0.0, "deliv": 28, "back": 2, "negComm": 0}, {"d": "2026-10-30", "sku": "TOY-BLOCK-500", "qty": 13, "rev": 30632.93, "retQty": 0, "retSum": 0.0, "comm": 5820.27, "log": 1321.29, "fine": 0.0, "deliv": 13, "back": 0, "negComm": 0}, {"d": "2026-10-30", "sku": "UMB-AUTO-BLK", "qty": 17, "rev": 18303.37, "retQty": 0, "retSum": 0.0, "comm": 4209.8, "log": 1744.78, "fine": 0.0, "deliv": 21, "back": 4, "negComm": 0}, {"d": "2026-10-30", "sku": "UMB-CANE-XL", "qty": 3, "rev": 4720.64, "retQty": 0, "retSum": 0.0, "comm": 1085.75, "log": 1182.68, "fine": 0.0, "deliv": 6, "back": 3, "negComm": 0}, {"d": "2026-10-31", "sku": "MUG-CERAMIC", "qty": 12, "rev": 6084.83, "retQty": 0, "retSum": 0.0, "comm": 1088.89, "log": 1728.4, "fine": 0.0, "deliv": 16, "back": 4, "negComm": 1}, {"d": "2026-10-31", "sku": "MUG-THERMO", "qty": 17, "rev": 15929.39, "retQty": 0, "retSum": 0.0, "comm": 3185.92, "log": 1688.7, "fine": 0.0, "deliv": 20, "back": 3, "negComm": 0}, {"d": "2026-10-31", "sku": "SOCK-SET-5", "qty": 26, "rev": 7957.69, "retQty": 1, "retSum": 310.5, "comm": 1911.81, "log": 5095.85, "fine": 0.0, "deliv": 46, "back": 20, "negComm": 0}, {"d": "2026-10-31", "sku": "SOCK-WOOL-2", "qty": 14, "rev": 8181.92, "retQty": 1, "retSum": 594.0, "comm": 1896.98, "log": 1408.59, "fine": 0.0, "deliv": 18, "back": 4, "negComm": 0}, {"d": "2026-10-31", "sku": "TOY-BEAR-40", "qty": 26, "rev": 35085.92, "retQty": 1, "retSum": 1369.5, "comm": 7080.45, "log": 2311.04, "fine": 0.0, "deliv": 27, "back": 1, "negComm": 0}, {"d": "2026-10-31", "sku": "TOY-BLOCK-500", "qty": 18, "rev": 42402.78, "retQty": 1, "retSum": 2394.0, "comm": 7601.7, "log": 1813.54, "fine": 0.0, "deliv": 18, "back": 0, "negComm": 0}, {"d": "2026-10-31", "sku": "UMB-AUTO-BLK", "qty": 29, "rev": 31306.77, "retQty": 0, "retSum": 0.0, "comm": 7200.62, "log": 3032.77, "fine": 0.0, "deliv": 36, "back": 7, "negComm": 0}, {"d": "2026-10-31", "sku": "UMB-CANE-XL", "qty": 7, "rev": 10922.86, "retQty": 0, "retSum": 0.0, "comm": 2512.28, "log": 1792.79, "fine": 0.0, "deliv": 10, "back": 3, "negComm": 0}, {"d": "2026-11-01", "sku": "MUG-CERAMIC", "qty": 13, "rev": 6575.52, "retQty": 0, "retSum": 0.0, "comm": 1315.13, "log": 1632.18, "fine": 0.0, "deliv": 15, "back": 2, "negComm": 0}, {"d": "2026-11-01", "sku": "MUG-THERMO", "qty": 19, "rev": 17899.07, "retQty": 1, "retSum": 954.0, "comm": 3389.05, "log": 2017.56, "fine": 0.0, "deliv": 23, "back": 4, "negComm": 0}, {"d": "2026-11-01", "sku": "SOCK-SET-5", "qty": 18, "rev": 5508.2, "retQty": 1, "retSum": 310.5, "comm": 1299.41, "log": 3616.46, "fine": 0.0, "deliv": 33, "back": 15, "negComm": 0}, {"d": "2026-11-01", "sku": "SOCK-WOOL-2", "qty": 17, "rev": 9962.71, "retQty": 0, "retSum": 0.0, "comm": 2490.66, "log": 1624.31, "fine": 0.0, "deliv": 21, "back": 4, "negComm": 0}, {"d": "2026-11-01", "sku": "TOY-BEAR-40", "qty": 26, "rev": 35070.95, "retQty": 1, "retSum": 1369.5, "comm": 7077.32, "log": 2456.93, "fine": 0.0, "deliv": 28, "back": 2, "negComm": 0}, {"d": "2026-11-01", "sku": "TOY-BLOCK-500", "qty": 21, "rev": 49493.11, "retQty": 1, "retSum": 2394.0, "comm": 8948.85, "log": 2001.72, "fine": 0.0, "deliv": 21, "back": 0, "negComm": 0}, {"d": "2026-11-01", "sku": "UMB-AUTO-BLK", "qty": 34, "rev": 36574.36, "retQty": 0, "retSum": 0.0, "comm": 8412.08, "log": 2897.01, "fine": 0.0, "deliv": 39, "back": 5, "negComm": 0}, {"d": "2026-11-01", "sku": "UMB-CANE-XL", "qty": 5, "rev": 7832.95, "retQty": 0, "retSum": 0.0, "comm": 1801.58, "log": 2303.96, "fine": 0.0, "deliv": 11, "back": 6, "negComm": 0}], "general": [{"d": "2026-10-26", "item": "Платная приёмка", "sum": 2800.0}, {"d": "2026-10-26", "item": "Хранение", "sum": 2015.18}, {"d": "2026-10-27", "item": "Хранение", "sum": 2091.99}, {"d": "2026-10-28", "item": "Удержание", "sum": 4350.0}, {"d": "2026-10-28", "item": "Хранение", "sum": 1955.28}, {"d": "2026-10-29", "item": "Хранение", "sum": 1795.91}, {"d": "2026-10-30", "item": "Возмещение издержек", "sum": -1240.0}, {"d": "2026-10-30", "item": "Хранение", "sum": 2089.13}, {"d": "2026-10-31", "item": "Хранение", "sum": 1909.19}, {"d": "2026-11-01", "item": "Удержание", "sum": 12000.0}, {"d": "2026-11-01", "item": "Хранение", "sum": 1711.8}], "payout": 594203.51};
+/* ---------- Sprache / язык / language ---------- */
+const I18N = {
+  de: {
+    'Продажи ДомУют за неделю': 'DomUjut – Verkäufe der Woche',
+    'Учебные данные': 'Übungsdaten',
+    'Отчёт о реализации ДомУют': 'Verkaufsbericht DomUjut',
+    'Переключить тему': 'Design wechseln',
+    'Фильтры': 'Filter', 'С': 'Von', 'По': 'Bis', 'Категория': 'Kategorie', 'Артикул': 'Artikel', 'Показатель': 'Kennzahl',
+    'Выручка, ₽': 'Umsatz, ₽', 'Штуки': 'Stück', 'Сбросить': 'Zurücksetzen', 'Итоги периода': 'Kennzahlen des Zeitraums',
+    'Динамика продаж': 'Verkaufsverlauf', 'По дням, за вычетом возвратов не считается — это продажи': 'Pro Tag, ohne Abzug der Retouren',
+    'Структура по артикулам': 'Anteile nach Artikeln', 'Доля в выручке': 'Anteil am Umsatz',
+    'Продажи по дням в разрезе артикулов': 'Tagesverkäufe pro Artikel', 'Общая шкала для всех артикулов': 'Gemeinsame Skala für alle Artikel',
+    'От выручки к деньгам на счёте': 'Vom Umsatz zur Auszahlung', 'Что удержал маркетплейс за период': 'Was der Marktplatz im Zeitraum einbehalten hat',
+    'Процент выкупа': 'Abnahmequote', 'Выкуплено из доставленных покупателю. Ниже 70% — повод разобраться': 'Anteil der an Kunden zugestellten Ware, die behalten wurde. Unter 70 % – genauer prüfen',
+    'Юнит-экономика одной продажи': 'Stückkosten pro Verkauf', 'Из чего складывается средняя цена продажи, ₽ за штуку. Себестоимость не учтена': 'Wie sich der Durchschnittspreis zusammensetzt, ₽ pro Stück. Ohne Einkaufskosten',
+    'Проблемные позиции': 'Problemartikel', 'Общие расходы без привязки к артикулу': 'Allgemeine Kosten ohne Artikelbezug',
+    'Не распределены по товарам — показаны отдельно': 'Nicht auf Artikel verteilt – separat dargestellt',
+    'Артикулы: доходы и расходы': 'Artikel: Einnahmen und Kosten',
+    'Нажмите на строку, чтобы раскрыть статьи и продажи по дням. ABC — по выручке за период': 'Zeile anklicken, um Positionen und Tagesverkäufe zu sehen. ABC nach Umsatz im Zeitraum',
+    ' тыс': ' Tsd.', 'Все категории': 'Alle Kategorien', 'Все артикулы': 'Alle Artikel', 'Светлая тема': 'Helles Design', 'Тёмная тема': 'Dunkles Design',
+    ' шт': ' Stk.', 'Еженедельный отчёт маркетплейса · ': 'Wöchentlicher Marktplatzbericht · ', 'все артикулы': 'alle Artikel',
+    'Источник: ': 'Quelle: ', ' строк). Данные учебные, сгенерированы для практики. Себестоимость в отчёте отсутствует, прибыль не рассчитывается.': ' Zeilen). Generierte Übungsdaten. Einkaufskosten sind nicht enthalten, daher wird kein Gewinn berechnet.',
+    'Выручка': 'Umsatz', 'продажи до возвратов': 'Verkäufe vor Retouren', 'К перечислению': 'Auszahlung', 'после всех удержаний': 'nach allen Abzügen',
+    'по товарам, без общих расходов': 'pro Artikel, ohne allgemeine Kosten', 'Продано': 'Verkauft', 'возвратов: ': 'Retouren: ',
+    ' доставок покупателям': ' Zustellungen an Kunden', 'Средний чек': 'Ø Verkaufspreis', 'за одну продажу': 'pro Verkauf',
+    'Удержано маркетплейсом': 'Vom Marktplatz einbehalten', ' от выручки за вычетом возвратов': ' des Umsatzes nach Retouren',
+    'Динамика продаж, ₽': 'Verkaufsverlauf, ₽', 'Динамика продаж, шт': 'Verkaufsverlauf, Stk.', 'Сумма по выбранным артикулам за каждый день': 'Summe der gewählten Artikel pro Tag',
+    'Нет данных за период': 'Keine Daten im Zeitraum', 'Продажи по дням': 'Verkäufe pro Tag', 'макс. ': 'max. ', 'Возвраты': 'Retouren',
+    'Доля в выручке за период': 'Anteil am Umsatz im Zeitraum', 'Доля в проданных штуках': 'Anteil an verkauften Stück', 'Нет продаж': 'Keine Verkäufe',
+    'Значение': 'Wert', 'Доля': 'Anteil', '₽ всего': '₽ gesamt', 'шт всего': 'Stk. gesamt',
+    ' по дням. Общая шкала для всех артикулов — высоту столбцов можно сравнивать': ' pro Tag. Gemeinsame Skala – die Balkenhöhen sind vergleichbar',
+    'Нет данных': 'Keine Daten', ' · итого ': ' · gesamt ', 'Продажи ': 'Verkäufe ', ' по дням': ' pro Tag',
+    'Комиссия': 'Provision', 'Логистика': 'Logistik', 'Штрафы': 'Strafen', 'На счёт': 'Auf das Konto',
+    'Каждая ступень — сколько удержал маркетплейс. Итог совпадает с суммой к перечислению по отчёту': 'Jede Stufe zeigt einen Abzug des Marktplatzes. Das Ergebnis entspricht der Auszahlung laut Bericht',
+    'Выбран фильтр: общие расходы без привязки к артикулу не вычитаются': 'Filter aktiv: allgemeine Kosten ohne Artikelbezug werden nicht abgezogen',
+    'Каскад от выручки к деньгам на счёте': 'Wasserfall vom Umsatz zur Auszahlung', 'Сумма': 'Betrag', 'От выручки': 'Vom Umsatz',
+    'Нет доставок': 'Keine Zustellungen', 'Процент выкупа по артикулам': 'Abnahmequote pro Artikel', 'Выкуп': 'Abnahme',
+    'Доставлено': 'Zugestellt', 'Выкуплено': 'Behalten', 'Отказы': 'Ablehnungen', 'Остаётся продавцу': 'Bleibt dem Verkäufer',
+    'Юнит-экономика по артикулам': 'Stückkosten pro Artikel', ' · за 1 шт': ' · pro Stück', 'Средняя цена': 'Ø Preis', 'Критично': 'Kritisch',
+    'Продавцу остаётся только ': 'Dem Verkäufer bleiben nur ', ' выручки: ': ' des Umsatzes: ', ' из ': ' von ',
+    '. После себестоимости вероятен убыток.': '. Nach Einkaufskosten droht ein Verlust.', 'Выкуп ': 'Abnahmequote ', ' отказов из ': ' Ablehnungen bei ',
+    ' доставок. Обратная логистика оплачивается продавцом.': ' Zustellungen. Die Rücklogistik zahlt der Verkäufer.', 'Логистика съедает ': 'Logistik kostet ',
+    ' выручки (': ' des Umsatzes (', 'Проверить': 'Prüfen', 'В ': 'Bei ',
+    ' продажах комиссия отрицательная — маркетплейс доплатил. Стоит сверить с актом.': ' Verkäufen ist die Provision negativ – der Marktplatz hat zugezahlt. Mit der Abrechnung abgleichen.',
+    'Штраф': 'Strafe', 'Штраф ': 'Strafe ', ' за период.': ' im Zeitraum.', 'В норме': 'In Ordnung', 'Проблем не найдено': 'Keine Probleme gefunden',
+    'По выбранным артикулам выкуп, логистика и комиссия в пределах нормы.': 'Abnahmequote, Logistik und Provision der gewählten Artikel liegen im Normalbereich.',
+    'Статья': 'Position', 'Начислений': 'Buchungen', 'Итого': 'Gesamt', 'Название': 'Bezeichnung', 'Продано, шт': 'Verkauft, Stk.',
+    '% от выручки': '% vom Umsatz', 'Доходы и расходы': 'Einnahmen und Kosten', 'Продажи (': 'Verkäufe (', ' шт)': ' Stk.)', 'Возвраты (': 'Retouren (',
+    'Комиссия маркетплейса с НДС': 'Marktplatz-Provision inkl. MwSt.', 'Логистика к покупателю и обратно': 'Logistik zum Kunden und zurück',
+    'По дням': 'Pro Tag', 'День': 'Tag', 'Показатели': 'Kennzahlen', 'Доставок покупателям': 'Zustellungen an Kunden',
+    'Отказов при получении': 'Ablehnungen bei Zustellung', 'Средняя цена продажи': 'Ø Verkaufspreis', 'Остаётся с 1 шт': 'Bleibt pro Stück', 'Класс ABC': 'ABC-Klasse',
+    'Зонт автомат чёрный': 'Automatik-Regenschirm schwarz', 'Зонты': 'Regenschirme', 'Зонт-трость XL': 'Stockschirm XL',
+    'Плюшевый медведь 40 см': 'Plüschbär 40 cm', 'Игрушки мягкие': 'Plüschtiere', 'Конструктор 500 деталей': 'Baukasten 500 Teile', 'Конструкторы': 'Baukästen',
+    'Кружка керамическая 350 мл': 'Keramiktasse 350 ml', 'Кружки': 'Tassen', 'Термокружка 450 мл': 'Thermobecher 450 ml',
+    'Носки набор 5 пар': 'Socken 5er-Set', 'Носки': 'Socken', 'Носки шерстяные 2 пары': 'Wollsocken 2 Paar',
+    'Платная приёмка': 'Kostenpflichtige Warenannahme', 'Хранение': 'Lagerung', 'Удержание': 'Einbehalt', 'Возмещение издержек': 'Kostenerstattung'
+  },
+  en: {
+    'Продажи ДомУют за неделю': 'DomUyut – weekly sales',
+    'Учебные данные': 'Practice data',
+    'Отчёт о реализации ДомУют': 'DomUyut sales report',
+    'Переключить тему': 'Toggle theme',
+    'Фильтры': 'Filters', 'С': 'From', 'По': 'To', 'Категория': 'Category', 'Артикул': 'Item', 'Показатель': 'Metric',
+    'Выручка, ₽': 'Revenue, ₽', 'Штуки': 'Units', 'Сбросить': 'Reset', 'Итоги периода': 'Period summary',
+    'Динамика продаж': 'Sales trend', 'По дням, за вычетом возвратов не считается — это продажи': 'Per day, before returns',
+    'Структура по артикулам': 'Share by item', 'Доля в выручке': 'Share of revenue',
+    'Продажи по дням в разрезе артикулов': 'Daily sales per item', 'Общая шкала для всех артикулов': 'Shared scale for all items',
+    'От выручки к деньгам на счёте': 'From revenue to payout', 'Что удержал маркетплейс за период': 'What the marketplace deducted in the period',
+    'Процент выкупа': 'Buyout rate', 'Выкуплено из доставленных покупателю. Ниже 70% — повод разобраться': 'Share of delivered goods the customer kept. Below 70% – worth a closer look',
+    'Юнит-экономика одной продажи': 'Unit economics per sale', 'Из чего складывается средняя цена продажи, ₽ за штуку. Себестоимость не учтена': 'What makes up the average sale price, ₽ per unit. Cost of goods not included',
+    'Проблемные позиции': 'Problem items', 'Общие расходы без привязки к артикулу': 'General costs not tied to an item',
+    'Не распределены по товарам — показаны отдельно': 'Not allocated to items – shown separately',
+    'Артикулы: доходы и расходы': 'Items: income and costs',
+    'Нажмите на строку, чтобы раскрыть статьи и продажи по дням. ABC — по выручке за период': 'Click a row to see line items and daily sales. ABC by revenue in the period',
+    ' тыс': 'k', 'Все категории': 'All categories', 'Все артикулы': 'All items', 'Светлая тема': 'Light theme', 'Тёмная тема': 'Dark theme',
+    ' шт': ' pcs', 'Еженедельный отчёт маркетплейса · ': 'Weekly marketplace report · ', 'все артикулы': 'all items',
+    'Источник: ': 'Source: ', ' строк). Данные учебные, сгенерированы для практики. Себестоимость в отчёте отсутствует, прибыль не рассчитывается.': ' rows). Generated practice data. Cost of goods is not included, so no profit is calculated.',
+    'Выручка': 'Revenue', 'продажи до возвратов': 'sales before returns', 'К перечислению': 'Payout', 'после всех удержаний': 'after all deductions',
+    'по товарам, без общих расходов': 'per item, without general costs', 'Продано': 'Sold', 'возвратов: ': 'returns: ',
+    ' доставок покупателям': ' deliveries to customers', 'Средний чек': 'Average price', 'за одну продажу': 'per sale',
+    'Удержано маркетплейсом': 'Deducted by marketplace', ' от выручки за вычетом возвратов': ' of revenue after returns',
+    'Динамика продаж, ₽': 'Sales trend, ₽', 'Динамика продаж, шт': 'Sales trend, pcs', 'Сумма по выбранным артикулам за каждый день': 'Total of selected items per day',
+    'Нет данных за период': 'No data for this period', 'Продажи по дням': 'Sales per day', 'макс. ': 'max ', 'Возвраты': 'Returns',
+    'Доля в выручке за период': 'Share of revenue in period', 'Доля в проданных штуках': 'Share of units sold', 'Нет продаж': 'No sales',
+    'Значение': 'Value', 'Доля': 'Share', '₽ всего': '₽ total', 'шт всего': 'pcs total',
+    ' по дням. Общая шкала для всех артикулов — высоту столбцов можно сравнивать': ' per day. Shared scale – bar heights are comparable',
+    'Нет данных': 'No data', ' · итого ': ' · total ', 'Продажи ': 'Sales ', ' по дням': ' per day',
+    'Комиссия': 'Commission', 'Логистика': 'Logistics', 'Штрафы': 'Penalties', 'На счёт': 'To account',
+    'Каждая ступень — сколько удержал маркетплейс. Итог совпадает с суммой к перечислению по отчёту': 'Each step is a marketplace deduction. The result matches the payout in the report',
+    'Выбран фильтр: общие расходы без привязки к артикулу не вычитаются': 'Filter active: general costs not tied to an item are not deducted',
+    'Каскад от выручки к деньгам на счёте': 'Waterfall from revenue to payout', 'Сумма': 'Amount', 'От выручки': 'Of revenue',
+    'Нет доставок': 'No deliveries', 'Процент выкупа по артикулам': 'Buyout rate per item', 'Выкуп': 'Buyout',
+    'Доставлено': 'Delivered', 'Выкуплено': 'Kept', 'Отказы': 'Rejected', 'Остаётся продавцу': 'Left for seller',
+    'Юнит-экономика по артикулам': 'Unit economics per item', ' · за 1 шт': ' · per unit', 'Средняя цена': 'Avg. price', 'Критично': 'Critical',
+    'Продавцу остаётся только ': 'The seller keeps only ', ' выручки: ': ' of revenue: ', ' из ': ' of ',
+    '. После себестоимости вероятен убыток.': '. After cost of goods a loss is likely.', 'Выкуп ': 'Buyout ', ' отказов из ': ' rejections out of ',
+    ' доставок. Обратная логистика оплачивается продавцом.': ' deliveries. The seller pays the return logistics.', 'Логистика съедает ': 'Logistics eats ',
+    ' выручки (': ' of revenue (', 'Проверить': 'Check', 'В ': 'In ',
+    ' продажах комиссия отрицательная — маркетплейс доплатил. Стоит сверить с актом.': ' sales the commission is negative – the marketplace paid extra. Worth checking against the statement.',
+    'Штраф': 'Penalty', 'Штраф ': 'Penalty ', ' за период.': ' in the period.', 'В норме': 'OK', 'Проблем не найдено': 'No problems found',
+    'По выбранным артикулам выкуп, логистика и комиссия в пределах нормы.': 'Buyout, logistics and commission of the selected items are within normal range.',
+    'Статья': 'Line item', 'Начислений': 'Entries', 'Итого': 'Total', 'Название': 'Name', 'Продано, шт': 'Sold, pcs',
+    '% от выручки': '% of revenue', 'Доходы и расходы': 'Income and costs', 'Продажи (': 'Sales (', ' шт)': ' pcs)', 'Возвраты (': 'Returns (',
+    'Комиссия маркетплейса с НДС': 'Marketplace commission incl. VAT', 'Логистика к покупателю и обратно': 'Logistics to customer and back',
+    'По дням': 'Per day', 'День': 'Day', 'Показатели': 'Metrics', 'Доставок покупателям': 'Deliveries to customers',
+    'Отказов при получении': 'Rejected on delivery', 'Средняя цена продажи': 'Average sale price', 'Остаётся с 1 шт': 'Left per unit', 'Класс ABC': 'ABC class',
+    'Зонт автомат чёрный': 'Automatic umbrella black', 'Зонты': 'Umbrellas', 'Зонт-трость XL': 'Walking umbrella XL',
+    'Плюшевый медведь 40 см': 'Plush bear 40 cm', 'Игрушки мягкие': 'Plush toys', 'Конструктор 500 деталей': 'Building set 500 pcs', 'Конструкторы': 'Building sets',
+    'Кружка керамическая 350 мл': 'Ceramic mug 350 ml', 'Кружки': 'Mugs', 'Термокружка 450 мл': 'Travel mug 450 ml',
+    'Носки набор 5 пар': 'Socks 5-pack', 'Носки': 'Socks', 'Носки шерстяные 2 пары': 'Wool socks 2 pairs',
+    'Платная приёмка': 'Paid goods acceptance', 'Хранение': 'Storage', 'Удержание': 'Deduction', 'Возмещение издержек': 'Cost reimbursement'
+  }
+};
+const LOCALES = {ru: 'ru-RU', de: 'de-DE', en: 'en-US'};
+let LANG = (() => {
+  try { const s = localStorage.getItem('dash-lang'); if (s && LOCALES[s]) return s; } catch (e) {}
+  const n = (navigator.language || 'de').slice(0, 2);
+  return n === 'ru' ? 'ru' : n === 'en' ? 'en' : 'de';
+})();
+const T = s => (LANG !== 'ru' && I18N[LANG] && I18N[LANG][s] != null) ? I18N[LANG][s] : s;
+const LOC = () => LOCALES[LANG];
+
 const $ = s => document.querySelector(s);
-const rub = v => new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 0}).format(Math.round(v)) + ' ₽';
-const rubK = v => Math.abs(v) >= 1000 ? new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 1}).format(v / 1000) + ' тыс' : Math.round(v) + '';
-const int = v => new Intl.NumberFormat('ru-RU').format(Math.round(v));
-const pct = v => isFinite(v) ? new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 1}).format(v * 100) + '%' : '—';
+const rub = v => new Intl.NumberFormat(LOC(), {maximumFractionDigits: 0}).format(Math.round(v)) + ' ₽';
+const rubK = v => Math.abs(v) >= 1000 ? new Intl.NumberFormat(LOC(), {maximumFractionDigits: 1}).format(v / 1000) + T(' тыс') : Math.round(v) + '';
+const int = v => new Intl.NumberFormat(LOC()).format(Math.round(v));
+const pct = v => isFinite(v) ? new Intl.NumberFormat(LOC(), {maximumFractionDigits: 1}).format(v * 100) + '%' : '—';
 const dayLbl = d => { const [y, m, dd] = d.split('-'); return dd + '.' + m; };
-const WD = ['вс','пн','вт','ср','чт','пт','сб'];
-const wd = d => WD[new Date(d + 'T00:00:00').getDay()];
+const WD = {ru: ['вс','пн','вт','ср','чт','пт','сб'], de: ['So','Mo','Di','Mi','Do','Fr','Sa'], en: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']};
+const wd = d => WD[LANG][new Date(d + 'T00:00:00').getDay()];
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
 const SKUS = DATA.skus;
@@ -202,12 +326,15 @@ const state = {from: DAYS[0], to: DAYS[DAYS.length - 1], cat: 'all', sku: 'all',
 
 /* ---------- фильтры ---------- */
 function opt(sel, items) { sel.replaceChildren(...items.map(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; return o; })); }
-opt($('#fFrom'), DAYS.map(d => [d, dayLbl(d) + ', ' + wd(d)]));
-opt($('#fTo'), DAYS.map(d => [d, dayLbl(d) + ', ' + wd(d)]));
-opt($('#fCat'), [['all', 'Все категории'], ...CATS.map(c => [c, c])]);
+function baseOptions() {
+  opt($('#fFrom'), DAYS.map(d => [d, dayLbl(d) + ', ' + wd(d)]));
+  opt($('#fTo'), DAYS.map(d => [d, dayLbl(d) + ', ' + wd(d)]));
+  opt($('#fCat'), [['all', T('Все категории')], ...CATS.map(c => [c, T(c)])]);
+}
+baseOptions();
 function skuOptions() {
   const list = SKUS.filter(s => state.cat === 'all' || s.cat === state.cat);
-  opt($('#fSku'), [['all', 'Все артикулы'], ...list.map(s => [s.sku, s.sku + ' · ' + s.name])]);
+  opt($('#fSku'), [['all', T('Все артикулы')], ...list.map(s => [s.sku, s.sku + ' · ' + T(s.name)])]);
   if (state.sku !== 'all' && !list.some(s => s.sku === state.sku)) state.sku = 'all';
   $('#fSku').value = state.sku;
 }
@@ -224,7 +351,7 @@ $('#fReset').addEventListener('click', () => { Object.assign(state, {from: DAYS[
 
 /* тема */
 function isDark() { const t = document.documentElement.dataset.theme; return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
-function themeLabel() { $('#theme').textContent = isDark() ? 'Светлая тема' : 'Тёмная тема'; }
+function themeLabel() { $('#theme').textContent = isDark() ? T('Светлая тема') : T('Тёмная тема'); }
 $('#theme').addEventListener('click', () => { document.documentElement.dataset.theme = isDark() ? 'light' : 'dark'; themeLabel(); render(); });
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { themeLabel(); render(); });
 new MutationObserver(() => { themeLabel(); render(); }).observe(document.documentElement, {attributes: true, attributeFilter: ['data-theme']});
@@ -261,7 +388,7 @@ function derive(a) {
   return a;
 }
 const mval = a => state.metric === 'rev' ? a.rev : a.qty;
-const mfmt = v => state.metric === 'rev' ? rub(v) : int(v) + ' шт';
+const mfmt = v => state.metric === 'rev' ? rub(v) : int(v) + T(' шт');
 const maxis = v => state.metric === 'rev' ? rubK(v) : int(v);
 
 function compute() {
@@ -291,8 +418,8 @@ function render() {
   syncControls();
   const S = compute();
   const per = dayLbl(state.from) + '–' + dayLbl(state.to) + '.' + state.to.slice(0, 4);
-  $('#subtitle').textContent = 'Еженедельный отчёт маркетплейса · ' + per + ' · ' + (state.sku !== 'all' ? state.sku : state.cat !== 'all' ? state.cat : 'все артикулы');
-  $('#foot').textContent = 'Источник: ' + DATA.source + ' (' + int(DATA.rowsInSource) + ' строк). Данные учебные, сгенерированы для практики. Себестоимость в отчёте отсутствует, прибыль не рассчитывается.';
+  $('#subtitle').textContent = T('Еженедельный отчёт маркетплейса · ') + per + ' · ' + (state.sku !== 'all' ? state.sku : state.cat !== 'all' ? T(state.cat) : T('все артикулы'));
+  $('#foot').textContent = T('Источник: ') + DATA.source + ' (' + int(DATA.rowsInSource) + T(' строк). Данные учебные, сгенерированы для практики. Себестоимость в отчёте отсутствует, прибыль не рассчитывается.');
   renderKpis(S); renderTrend(S); renderDonut(S); renderMultiples(S); renderWaterfall(S);
   renderBuyout(S); renderUnit(S); renderProblems(S); renderGeneral(S); renderTable(S);
 }
@@ -301,12 +428,12 @@ function renderKpis(S) {
   const t = S.total;
   const pay = S.unfiltered ? t.payGoods - S.genTotal : t.payGoods;
   const items = [
-    ['Выручка', rub(t.rev), 'продажи до возвратов'],
-    ['К перечислению', rub(pay), S.unfiltered ? 'после всех удержаний' : 'по товарам, без общих расходов'],
-    ['Продано', int(t.qty) + ' шт', 'возвратов: ' + int(t.retQty) + ' шт'],
-    ['Процент выкупа', pct(t.buyout), int(t.deliv) + ' доставок покупателям'],
-    ['Средний чек', t.qty ? rub(t.rev / t.qty) : '—', 'за одну продажу'],
-    ['Удержано маркетплейсом', rub(t.netRev - pay), t.netRev ? pct((t.netRev - pay) / t.netRev) + ' от выручки за вычетом возвратов' : '—'],
+    [T('Выручка'), rub(t.rev), T('продажи до возвратов')],
+    [T('К перечислению'), rub(pay), S.unfiltered ? T('после всех удержаний') : T('по товарам, без общих расходов')],
+    [T('Продано'), int(t.qty) + T(' шт'), T('возвратов: ') + int(t.retQty) + T(' шт')],
+    [T('Процент выкупа'), pct(t.buyout), int(t.deliv) + T(' доставок покупателям')],
+    [T('Средний чек'), t.qty ? rub(t.rev / t.qty) : '—', T('за одну продажу')],
+    [T('Удержано маркетплейсом'), rub(t.netRev - pay), t.netRev ? pct((t.netRev - pay) / t.netRev) + T(' от выручки за вычетом возвратов') : '—'],
   ];
   $('#kpis').replaceChildren(...items.map(([l, v, h]) => {
     const d = document.createElement('div'); d.className = 'kpi';
@@ -319,14 +446,14 @@ function emptyMsg(el, text) { el.replaceChildren(); const p = document.createEle
 
 function renderTrend(S) {
   const el = $('#c-trend'); el.replaceChildren();
-  $('#h-trend').textContent = state.metric === 'rev' ? 'Динамика продаж, ₽' : 'Динамика продаж, шт';
-  $('#n-trend').textContent = 'Сумма по выбранным артикулам за каждый день';
-  const days = S.days; if (!days.length) return emptyMsg(el, 'Нет данных за период');
+  $('#h-trend').textContent = state.metric === 'rev' ? T('Динамика продаж, ₽') : T('Динамика продаж, шт');
+  $('#n-trend').textContent = T('Сумма по выбранным артикулам за каждый день');
+  const days = S.days; if (!days.length) return emptyMsg(el, T('Нет данных за период'));
   const W = el.clientWidth || 500, H = 240, m = {t: 22, r: 20, b: 26, l: 60};
   const pts = days.map(d => ({d, v: S.byDay[d] ? mval(S.byDay[d]) : 0}));
   const x = d3.scalePoint(days, [m.l, W - m.r]).padding(days.length === 1 ? 0.5 : 0);
   const y = d3.scaleLinear([0, d3.max(pts, p => p.v) * 1.12 || 1], [H - m.b, m.t]).nice();
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Продажи по дням');
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', T('Продажи по дням'));
   svg.append('g').attr('class', 'gridline').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - m.l - m.r)).tickFormat(''));
   svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(maxis)).call(g => g.select('.domain').remove()).call(g => g.selectAll('line').remove());
   svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickFormat(d => dayLbl(d) + ' ' + wd(d)).tickSize(0).tickPadding(8)).call(g => g.select('.domain').remove());
@@ -336,7 +463,7 @@ function renderTrend(S) {
   const last = pts[pts.length - 1];
   svg.append('circle').attr('cx', x(last.d)).attr('cy', y(last.v)).attr('r', 4.5).attr('fill', acc).attr('stroke', css('--panel')).attr('stroke-width', 2);
   const best = pts.reduce((a, b) => b.v > a.v ? b : a);
-  svg.append('text').attr('class', 'val').attr('x', x(best.d)).attr('y', y(best.v) - 10).attr('text-anchor', x(best.d) > W - 60 ? 'end' : x(best.d) < m.l + 40 ? 'start' : 'middle').text('макс. ' + maxis(best.v));
+  svg.append('text').attr('class', 'val').attr('x', x(best.d)).attr('y', y(best.v) - 10).attr('text-anchor', x(best.d) > W - 60 ? 'end' : x(best.d) < m.l + 40 ? 'start' : 'middle').text(T('макс. ') + maxis(best.v));
   const cross = svg.append('line').attr('stroke', css('--muted')).attr('stroke-dasharray', '3 3').attr('y1', m.t).attr('y2', H - m.b).style('display', 'none');
   const hot = svg.append('circle').attr('r', 5).attr('fill', acc).attr('stroke', css('--panel')).attr('stroke-width', 2).style('display', 'none');
   svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
@@ -344,53 +471,53 @@ function renderTrend(S) {
       const [mx] = d3.pointer(ev); const p = pts.reduce((a, b) => Math.abs(x(b.d) - mx) < Math.abs(x(a.d) - mx) ? b : a);
       cross.style('display', null).attr('x1', x(p.d)).attr('x2', x(p.d)); hot.style('display', null).attr('cx', x(p.d)).attr('cy', y(p.v));
       const a = S.byDay[p.d] || zero();
-      showTip(ev, dayLbl(p.d) + ', ' + wd(p.d), [['Выручка', rub(a.rev)], ['Продано', int(a.qty) + ' шт'], ['Возвраты', int(a.retQty) + ' шт']]);
+      showTip(ev, dayLbl(p.d) + ', ' + wd(p.d), [[T('Выручка'), rub(a.rev)], [T('Продано'), int(a.qty) + T(' шт')], [T('Возвраты'), int(a.retQty) + T(' шт')]]);
     }).on('mouseleave', () => { cross.style('display', 'none'); hot.style('display', 'none'); hideTip(); });
 }
 
 function renderDonut(S) {
   const el = $('#c-donut'); el.replaceChildren(); const leg = $('#l-donut'); leg.replaceChildren();
-  $('#n-donut').textContent = state.metric === 'rev' ? 'Доля в выручке за период' : 'Доля в проданных штуках';
+  $('#n-donut').textContent = state.metric === 'rev' ? T('Доля в выручке за период') : T('Доля в проданных штуках');
   const items = S.skus.map(s => ({s, v: mval(S.bySku[s])})).filter(i => i.v > 0);
-  if (!items.length) return emptyMsg(el, 'Нет продаж');
+  if (!items.length) return emptyMsg(el, T('Нет продаж'));
   const tot = d3.sum(items, i => i.v); const R = 100;
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${2 * R} ${2 * R}`).attr('role', 'img').attr('aria-label', 'Структура по артикулам');
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${2 * R} ${2 * R}`).attr('role', 'img').attr('aria-label', T('Структура по артикулам'));
   const g = svg.append('g').attr('transform', `translate(${R},${R})`);
   const arcs = d3.pie().value(i => i.v).sort(null).padAngle(items.length > 1 ? 0.012 : 0)(items);
   g.selectAll('path').data(arcs).join('path').attr('d', d3.arc().innerRadius(R * 0.62).outerRadius(R - 2).cornerRadius(3))
     .attr('fill', a => color(a.data.s)).attr('stroke', css('--panel')).attr('stroke-width', 1)
-    .on('mousemove', (ev, a) => showTip(ev, a.data.s + ' · ' + SKU[a.data.s].name, [['Значение', mfmt(a.data.v)], ['Доля', pct(a.data.v / tot)]])).on('mouseleave', hideTip);
+    .on('mousemove', (ev, a) => showTip(ev, a.data.s + ' · ' + T(SKU[a.data.s].name), [[T('Значение'), mfmt(a.data.v)], [T('Доля'), pct(a.data.v / tot)]])).on('mouseleave', hideTip);
   g.append('text').attr('class', 'val').attr('text-anchor', 'middle').attr('dy', '-0.1em').style('font-size', '15px').text(state.metric === 'rev' ? rubK(tot) : int(tot));
-  g.append('text').attr('text-anchor', 'middle').attr('dy', '1.3em').text(state.metric === 'rev' ? '₽ всего' : 'шт всего');
+  g.append('text').attr('text-anchor', 'middle').attr('dy', '1.3em').text(state.metric === 'rev' ? T('₽ всего') : T('шт всего'));
   items.sort((a, b) => b.v - a.v).forEach(i => {
     const li = document.createElement('li');
     li.innerHTML = '<span class="sw"></span><span class="nm"></span><span class="v"></span><span class="p"></span>';
-    li.children[0].style.background = color(i.s); li.children[1].textContent = i.s + ' · ' + SKU[i.s].name; li.children[1].title = SKU[i.s].name;
+    li.children[0].style.background = color(i.s); li.children[1].textContent = i.s + ' · ' + T(SKU[i.s].name); li.children[1].title = T(SKU[i.s].name);
     li.children[2].textContent = mfmt(i.v); li.children[3].textContent = pct(i.v / tot); leg.append(li);
   });
 }
 
 function renderMultiples(S) {
   const el = $('#c-mult'); el.replaceChildren();
-  $('#n-mult').textContent = (state.metric === 'rev' ? 'Выручка, ₽' : 'Штуки') + ' по дням. Общая шкала для всех артикулов — высоту столбцов можно сравнивать';
-  if (!S.skus.length) return emptyMsg(el, 'Нет данных');
+  $('#n-mult').textContent = (state.metric === 'rev' ? T('Выручка, ₽') : T('Штуки')) + T(' по дням. Общая шкала для всех артикулов — высоту столбцов можно сравнивать');
+  if (!S.skus.length) return emptyMsg(el, T('Нет данных'));
   const days = S.days; const max = d3.max(S.skus, s => d3.max(days, d => S.bySkuDay[s][d] ? mval(S.bySkuDay[s][d]) : 0)) || 1;
   S.skus.forEach(s => {
     const box = document.createElement('div'); box.className = 'mini';
     const h = document.createElement('h3'); const dot = document.createElement('span'); dot.className = 'dot'; dot.style.background = color(s);
     const nm = document.createElement('span'); nm.textContent = s; h.append(dot, nm);
-    const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = SKU[s].name + ' · итого ' + mfmt(mval(S.bySku[s]));
+    const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = T(SKU[s].name) + T(' · итого ') + mfmt(mval(S.bySku[s]));
     const c = document.createElement('div'); c.className = 'chart'; box.append(h, meta, c); el.append(box);
     const W = c.clientWidth || 220, H = 120, m = {t: 8, r: 4, b: 20, l: 4};
     const x = d3.scaleBand(days, [m.l, W - m.r]).padding(0.25); const y = d3.scaleLinear([0, max], [H - m.b, m.t]);
-    const svg = d3.select(c).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Продажи ' + s + ' по дням');
+    const svg = d3.select(c).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', T('Продажи ') + s + T(' по дням'));
     svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', H - m.b).attr('y2', H - m.b).attr('stroke', css('--line'));
     const vals = days.map(d => ({d, v: S.bySkuDay[s][d] ? mval(S.bySkuDay[s][d]) : 0, a: S.bySkuDay[s][d] || zero()}));
     svg.selectAll('path.bar').data(vals).join('path').attr('class', 'bar').attr('fill', color(s))
       .attr('d', p => roundTop(x(p.d), y(p.v), x.bandwidth(), H - m.b - y(p.v), 3));
     svg.selectAll('text.x').data(days).join('text').attr('x', d => x(d) + x.bandwidth() / 2).attr('y', H - 6).attr('text-anchor', 'middle').style('font-size', '10px').text(d => wd(d));
     svg.selectAll('rect.hit').data(vals).join('rect').attr('x', p => x(p.d) - x.step() * x.paddingInner() / 2).attr('width', x.step()).attr('y', m.t).attr('height', H - m.t - m.b).attr('fill', 'transparent')
-      .on('mousemove', (ev, p) => showTip(ev, s + ' · ' + dayLbl(p.d) + ', ' + wd(p.d), [['Выручка', rub(p.a.rev)], ['Продано', int(p.a.qty) + ' шт'], ['Возвраты', int(p.a.retQty) + ' шт']])).on('mouseleave', hideTip);
+      .on('mousemove', (ev, p) => showTip(ev, s + ' · ' + dayLbl(p.d) + ', ' + wd(p.d), [[T('Выручка'), rub(p.a.rev)], [T('Продано'), int(p.a.qty) + T(' шт')], [T('Возвраты'), int(p.a.retQty) + T(' шт')]])).on('mouseleave', hideTip);
   });
 }
 function roundTop(x, y, w, h, r) {
@@ -400,14 +527,14 @@ function roundTop(x, y, w, h, r) {
 
 function renderWaterfall(S) {
   const el = $('#c-wf'); el.replaceChildren(); const t = S.total;
-  const steps = [['Выручка', t.rev, 'total'], ['Возвраты', -t.retSum], ['Комиссия', -t.comm], ['Логистика', -t.log], ['Штрафы', -t.fine]];
+  const steps = [[T('Выручка'), t.rev, 'total'], [T('Возвраты'), -t.retSum], [T('Комиссия'), -t.comm], [T('Логистика'), -t.log], [T('Штрафы'), -t.fine]];
   if (S.unfiltered) {
     const g = {}; S.general.forEach(r => g[r.item] = (g[r.item] || 0) + r.sum);
-    Object.entries(g).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => steps.push([k, -v]));
+    Object.entries(g).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => steps.push([T(k), -v]));
   }
   const pay = S.unfiltered ? t.payGoods - S.genTotal : t.payGoods;
-  steps.push([S.unfiltered ? 'На счёт' : 'К перечислению', pay, 'total']);
-  $('#n-wf').textContent = S.unfiltered ? 'Каждая ступень — сколько удержал маркетплейс. Итог совпадает с суммой к перечислению по отчёту' : 'Выбран фильтр: общие расходы без привязки к артикулу не вычитаются';
+  steps.push([S.unfiltered ? T('На счёт') : T('К перечислению'), pay, 'total']);
+  $('#n-wf').textContent = S.unfiltered ? T('Каждая ступень — сколько удержал маркетплейс. Итог совпадает с суммой к перечислению по отчёту') : T('Выбран фильтр: общие расходы без привязки к артикулу не вычитаются');
   let run = 0; const bars = steps.map(([k, v, type]) => {
     if (type === 'total') { const b = {k, v, y0: 0, y1: v, type}; run = v; return b; }
     const b = {k, v, y0: run, y1: run + v, type: v < 0 ? 'neg' : 'pos'}; run += v; return b;
@@ -415,7 +542,7 @@ function renderWaterfall(S) {
   const W = el.clientWidth || 800, H = 260, m = {t: 22, r: 8, b: 40, l: 70};
   const x = d3.scaleBand(bars.map(b => b.k), [m.l, W - m.r]).padding(0.28);
   const y = d3.scaleLinear([Math.min(0, d3.min(bars, b => Math.min(b.y0, b.y1))), d3.max(bars, b => Math.max(b.y0, b.y1)) * 1.08], [H - m.b, m.t]).nice();
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Каскад от выручки к деньгам на счёте');
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', T('Каскад от выручки к деньгам на счёте'));
   svg.append('g').attr('class', 'gridline').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - m.l - m.r)).tickFormat(''));
   svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(rubK)).call(g => g.select('.domain').remove()).call(g => g.selectAll('line').remove());
   const narrow = x.bandwidth() < 46;
@@ -428,7 +555,7 @@ function renderWaterfall(S) {
   });
   svg.selectAll('rect.b').data(bars).join('rect').attr('class', 'b').attr('x', b => x(b.k)).attr('width', x.bandwidth())
     .attr('y', b => y(Math.max(b.y0, b.y1))).attr('height', b => Math.max(1, Math.abs(y(b.y0) - y(b.y1)))).attr('rx', 3).attr('fill', fill)
-    .on('mousemove', (ev, b) => showTip(ev, b.k, [['Сумма', rub(b.v)], ['От выручки', pct(Math.abs(b.v) / (t.rev || 1))]])).on('mouseleave', hideTip);
+    .on('mousemove', (ev, b) => showTip(ev, b.k, [[T('Сумма'), rub(b.v)], [T('От выручки'), pct(Math.abs(b.v) / (t.rev || 1))]])).on('mouseleave', hideTip);
   if (!narrow || W > 600) svg.selectAll('text.v').data(bars).join('text').attr('class', 'val').attr('x', b => x(b.k) + x.bandwidth() / 2).attr('y', b => y(Math.max(b.y0, b.y1)) - 6)
     .attr('text-anchor', 'middle').style('font-size', narrow ? '9px' : '11px').text(b => (b.type === 'neg' ? '−' : '') + rubK(Math.abs(b.v)));
 }
@@ -440,10 +567,10 @@ function wrapText(sel, width) {
 function renderBuyout(S) {
   const el = $('#c-buy'); el.replaceChildren();
   const items = S.skus.map(s => ({s, v: S.bySku[s].buyout, a: S.bySku[s]})).filter(i => isFinite(i.v)).sort((a, b) => a.v - b.v);
-  if (!items.length) return emptyMsg(el, 'Нет доставок');
+  if (!items.length) return emptyMsg(el, T('Нет доставок'));
   const W = el.clientWidth || 500, rowH = 28, m = {t: 6, r: 52, b: 22, l: Math.min(130, W * 0.32)}, H = m.t + m.b + rowH * items.length;
   const x = d3.scaleLinear([0, 1], [m.l, W - m.r]); const y = d3.scaleBand(items.map(i => i.s), [m.t, H - m.b]).padding(0.3);
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Процент выкупа по артикулам');
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', T('Процент выкупа по артикулам'));
   svg.append('g').attr('class', 'gridline').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(5).tickSize(-(H - m.t - m.b)).tickFormat(''));
   svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(5).tickFormat(d3.format('.0%')).tickSize(0).tickPadding(6)).call(g => g.select('.domain').remove());
   svg.append('line').attr('x1', x(0.7)).attr('x2', x(0.7)).attr('y1', m.t).attr('y2', H - m.b).attr('stroke', css('--fg2')).attr('stroke-dasharray', '4 3');
@@ -451,21 +578,21 @@ function renderBuyout(S) {
   svg.selectAll('text.n').data(items).join('text').attr('class', 'lbl').attr('x', m.l - 8).attr('y', i => y(i.s) + y.bandwidth() / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text(i => i.s);
   svg.selectAll('path.b').data(items).join('path').attr('class', 'b').attr('fill', i => i.v < 0.7 ? css('--serious') : css('--accent'))
     .attr('d', i => roundRight(x(0), y(i.s), x(i.v) - x(0), y.bandwidth(), 4))
-    .on('mousemove', (ev, i) => showTip(ev, i.s + ' · ' + SKU[i.s].name, [['Выкуп', pct(i.v)], ['Доставлено', int(i.a.deliv) + ' шт'], ['Выкуплено', int(i.a.qty) + ' шт'], ['Отказы', int(i.a.back) + ' шт']])).on('mouseleave', hideTip);
+    .on('mousemove', (ev, i) => showTip(ev, i.s + ' · ' + T(SKU[i.s].name), [[T('Выкуп'), pct(i.v)], [T('Доставлено'), int(i.a.deliv) + T(' шт')], [T('Выкуплено'), int(i.a.qty) + T(' шт')], [T('Отказы'), int(i.a.back) + T(' шт')]])).on('mouseleave', hideTip);
   svg.selectAll('text.v').data(items).join('text').attr('class', 'val').attr('x', i => x(i.v) + 6).attr('y', i => y(i.s) + y.bandwidth() / 2).attr('dy', '0.35em').text(i => (i.v < 0.7 ? '⚠ ' : '') + pct(i.v));
 }
 function roundRight(x, y, w, h, r) { if (w <= 0) return ''; r = Math.min(r, w, h / 2); return `M${x},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h - r}Q${x + w},${y + h} ${x + w - r},${y + h}H${x}Z`; }
 
 function renderUnit(S) {
   const el = $('#c-unit'); el.replaceChildren(); const leg = $('#l-unit'); leg.replaceChildren();
-  const parts = [['pay', 'Остаётся продавцу', '--s1'], ['comm', 'Комиссия', '--s2'], ['log', 'Логистика', '--s3'], ['fine', 'Штрафы', '--s4']];
+  const parts = [['pay', T('Остаётся продавцу'), '--s1'], ['comm', T('Комиссия'), '--s2'], ['log', T('Логистика'), '--s3'], ['fine', T('Штрафы'), '--s4']];
   parts.forEach(([, n, c]) => { const li = document.createElement('li'); li.innerHTML = '<span class="sw"></span><span class="nm"></span>'; li.children[0].style.background = css(c); li.children[1].textContent = n; leg.append(li); });
   const items = S.skus.map(s => { const a = S.bySku[s]; const u = a.netQty || 0; if (u <= 0) return null;
     const price = a.netRev / u, comm = a.comm / u, log = a.log / u, fine = a.fine / u; return {s, price, comm, log, fine, pay: price - comm - log - fine}; }).filter(Boolean).sort((a, b) => a.pay / a.price - b.pay / b.price);
-  if (!items.length) return emptyMsg(el, 'Нет продаж');
+  if (!items.length) return emptyMsg(el, T('Нет продаж'));
   const W = el.clientWidth || 500, rowH = 30, m = {t: 4, r: 70, b: 22, l: Math.min(130, W * 0.32)}, H = m.t + m.b + rowH * items.length;
   const x = d3.scaleLinear([0, d3.max(items, i => i.price) * 1.02], [m.l, W - m.r]).nice(); const y = d3.scaleBand(items.map(i => i.s), [m.t, H - m.b]).padding(0.28);
-  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Юнит-экономика по артикулам');
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', T('Юнит-экономика по артикулам'));
   svg.append('g').attr('class', 'gridline').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(4).tickSize(-(H - m.t - m.b)).tickFormat(''));
   svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(4).tickFormat(v => int(v) + ' ₽').tickSize(0).tickPadding(6)).call(g => g.select('.domain').remove());
   svg.selectAll('text.n').data(items).join('text').attr('class', 'lbl').attr('x', m.l - 8).attr('y', i => y(i.s) + y.bandwidth() / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text(i => i.s);
@@ -473,7 +600,7 @@ function renderUnit(S) {
     let x0 = 0; const segs = parts.map(([k, n, c]) => { const w = Math.max(0, i[k]); const s = {k, n, c, x0, w, v: i[k]}; x0 += w; return s; }).filter(s => s.w > 0);
     segs.forEach((s, j) => svg.append('rect').attr('x', x(s.x0) + (j ? 1 : 0)).attr('y', y(i.s)).attr('width', Math.max(0, x(s.x0 + s.w) - x(s.x0) - (j ? 1 : 0))).attr('height', y.bandwidth())
       .attr('rx', j === segs.length - 1 ? 3 : 0).attr('fill', css(s.c))
-      .on('mousemove', ev => showTip(ev, i.s + ' · за 1 шт', [['Средняя цена', rub(i.price)], ['Комиссия', rub(i.comm)], ['Логистика', rub(i.log)], ['Штрафы', rub(i.fine)], ['Остаётся продавцу', rub(i.pay) + ' (' + pct(i.pay / i.price) + ')']])).on('mouseleave', hideTip));
+      .on('mousemove', ev => showTip(ev, i.s + T(' · за 1 шт'), [[T('Средняя цена'), rub(i.price)], [T('Комиссия'), rub(i.comm)], [T('Логистика'), rub(i.log)], [T('Штрафы'), rub(i.fine)], [T('Остаётся продавцу'), rub(i.pay) + ' (' + pct(i.pay / i.price) + ')']])).on('mouseleave', hideTip));
     svg.append('text').attr('class', 'val').attr('x', x(Math.max(i.price, x0)) + 6).attr('y', y(i.s) + y.bandwidth() / 2).attr('dy', '0.35em').text(rub(i.pay));
   });
 }
@@ -481,15 +608,15 @@ function renderUnit(S) {
 function renderProblems(S) {
   const ul = $('#problems'); ul.replaceChildren(); const out = [];
   S.skus.forEach(s => {
-    const a = S.bySku[s]; const nm = s + ' · ' + SKU[s].name; const share = a.netRev ? a.payGoods / a.netRev : 0;
-    if (a.netRev > 0 && share < 0.45) out.push(['crit', 'Критично', nm, 'Продавцу остаётся только ' + pct(share) + ' выручки: ' + rub(a.payGoods) + ' из ' + rub(a.netRev) + '. После себестоимости вероятен убыток.', 3]);
-    if (a.buyout < 0.7) out.push(['serious', 'Выкуп', nm, 'Выкуп ' + pct(a.buyout) + ': ' + int(a.back) + ' отказов из ' + int(a.deliv) + ' доставок. Обратная логистика оплачивается продавцом.', 2]);
-    if (a.netRev > 0 && a.log / a.netRev > 0.2) out.push(['warn', 'Логистика', nm, 'Логистика съедает ' + pct(a.log / a.netRev) + ' выручки (' + rub(a.log) + ').', 1]);
-    if (a.negComm > 0) out.push(['warn', 'Проверить', nm, 'В ' + int(a.negComm) + ' продажах комиссия отрицательная — маркетплейс доплатил. Стоит сверить с актом.', 1]);
-    if (a.fine > 0) out.push(['serious', 'Штраф', nm, 'Штраф ' + rub(a.fine) + ' за период.', 2]);
+    const a = S.bySku[s]; const nm = s + ' · ' + T(SKU[s].name); const share = a.netRev ? a.payGoods / a.netRev : 0;
+    if (a.netRev > 0 && share < 0.45) out.push(['crit', T('Критично'), nm, T('Продавцу остаётся только ') + pct(share) + T(' выручки: ') + rub(a.payGoods) + T(' из ') + rub(a.netRev) + T('. После себестоимости вероятен убыток.'), 3]);
+    if (a.buyout < 0.7) out.push(['serious', T('Выкуп'), nm, T('Выкуп ') + pct(a.buyout) + ': ' + int(a.back) + T(' отказов из ') + int(a.deliv) + T(' доставок. Обратная логистика оплачивается продавцом.'), 2]);
+    if (a.netRev > 0 && a.log / a.netRev > 0.2) out.push(['warn', T('Логистика'), nm, T('Логистика съедает ') + pct(a.log / a.netRev) + T(' выручки (') + rub(a.log) + ').', 1]);
+    if (a.negComm > 0) out.push(['warn', T('Проверить'), nm, T('В ') + int(a.negComm) + T(' продажах комиссия отрицательная — маркетплейс доплатил. Стоит сверить с актом.'), 1]);
+    if (a.fine > 0) out.push(['serious', T('Штраф'), nm, T('Штраф ') + rub(a.fine) + T(' за период.'), 2]);
   });
   out.sort((a, b) => b[4] - a[4]);
-  if (!out.length) out.push(['ok', 'В норме', 'Проблем не найдено', 'По выбранным артикулам выкуп, логистика и комиссия в пределах нормы.', 0]);
+  if (!out.length) out.push(['ok', T('В норме'), T('Проблем не найдено'), T('По выбранным артикулам выкуп, логистика и комиссия в пределах нормы.'), 0]);
   out.forEach(([cls, chip, t, d]) => {
     const li = document.createElement('li'); li.innerHTML = '<span class="chip"></span><div><b></b><div class="d"></div></div>';
     li.children[0].className = 'chip ' + cls; li.children[0].textContent = chip; li.querySelector('b').textContent = t; li.querySelector('.d').textContent = d; ul.append(li);
@@ -499,29 +626,29 @@ function renderProblems(S) {
 function renderGeneral(S) {
   const t = $('#t-gen'); t.replaceChildren(); const g = {};
   S.general.forEach(r => (g[r.item] ||= []).push(r));
-  const th = document.createElement('thead'); th.innerHTML = '<tr><th class="l">Статья</th><th>Начислений</th><th>Сумма</th></tr>'; t.append(th);
+  const th = document.createElement('thead'); th.innerHTML = '<tr><th class="l"></th><th></th><th></th></tr>'; [T('Статья'), T('Начислений'), T('Сумма')].forEach((x, i) => th.querySelectorAll('th')[i].textContent = x); t.append(th);
   const tb = document.createElement('tbody');
   Object.entries(g).sort((a, b) => d3.sum(b[1], r => r.sum) - d3.sum(a[1], r => r.sum)).forEach(([k, rs]) => {
     const tr = document.createElement('tr'); const sum = d3.sum(rs, r => r.sum);
-    [k, int(rs.length), (sum < 0 ? '+' : '−') + rub(Math.abs(sum))].forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; if (i === 2) td.className = sum < 0 ? 'pos' : 'negv'; tr.append(td); });
+    [T(k), int(rs.length), (sum < 0 ? '+' : '−') + rub(Math.abs(sum))].forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; if (i === 2) td.className = sum < 0 ? 'pos' : 'negv'; tr.append(td); });
     tb.append(tr);
   });
   t.append(tb);
   const tf = document.createElement('tfoot'); const tr = document.createElement('tr');
-  ['Итого', '', '−' + rub(S.genTotal)].forEach(v => { const td = document.createElement('td'); td.textContent = v; tr.append(td); }); tf.append(tr); t.append(tf);
+  [T('Итого'), '', '−' + rub(S.genTotal)].forEach(v => { const td = document.createElement('td'); td.textContent = v; tr.append(td); }); tf.append(tr); t.append(tf);
 }
 
 const open = new Set();
 function renderTable(S) {
   const t = $('#t-sku'); t.replaceChildren();
-  const cols = [['Артикул', 'l'], ['Название', 'l'], ['ABC', 'l'], ['Продано, шт'], ['Выручка'], ['Возвраты'], ['Комиссия'], ['Логистика'], ['Штрафы'], ['К перечислению'], ['% от выручки'], ['Выкуп']];
+  const cols = [[T('Артикул'), 'l'], [T('Название'), 'l'], ['ABC', 'l'], [T('Продано, шт')], [T('Выручка')], [T('Возвраты')], [T('Комиссия')], [T('Логистика')], [T('Штрафы')], [T('К перечислению')], [T('% от выручки')], [T('Выкуп')]];
   const th = document.createElement('thead'); const hr = document.createElement('tr');
   cols.forEach(([n, c]) => { const h = document.createElement('th'); h.textContent = n; if (c) h.className = c; hr.append(h); }); th.append(hr); t.append(th);
   const tb = document.createElement('tbody');
   const order = S.skus.slice().sort((a, b) => S.bySku[b].netRev - S.bySku[a].netRev);
   order.forEach(s => {
     const a = S.bySku[s]; const tr = document.createElement('tr'); tr.className = 'main'; tr.tabIndex = 0; tr.setAttribute('aria-expanded', open.has(s));
-    const vals = [s, SKU[s].name, S.abc[s], int(a.qty), rub(a.rev), '−' + rub(a.retSum), '−' + rub(a.comm), '−' + rub(a.log), a.fine ? '−' + rub(a.fine) : '—', rub(a.payGoods), pct(a.netRev ? a.payGoods / a.netRev : NaN), pct(a.buyout)];
+    const vals = [s, T(SKU[s].name), S.abc[s], int(a.qty), rub(a.rev), '−' + rub(a.retSum), '−' + rub(a.comm), '−' + rub(a.log), a.fine ? '−' + rub(a.fine) : '—', rub(a.payGoods), pct(a.netRev ? a.payGoods / a.netRev : NaN), pct(a.buyout)];
     vals.forEach((v, i) => { const td = document.createElement('td'); if (cols[i][1]) td.className = cols[i][1];
       if (i === 0) { const c = document.createElement('span'); c.className = 'caret'; c.textContent = '›'; const d = document.createElement('span'); d.className = 'dot'; d.style.cssText = 'display:inline-block;margin-right:6px;vertical-align:middle;background:' + color(s); td.append(c, d, document.createTextNode(v)); }
       else if (i === 2) { const b = document.createElement('span'); b.className = 'abc'; b.textContent = v; td.append(b); }
@@ -533,8 +660,8 @@ function renderTable(S) {
     tb.append(tr, det);
   });
   t.append(tb);
-  const T = S.total; const tf = document.createElement('tfoot'); const fr = document.createElement('tr');
-  ['Итого', '', '', int(T.qty), rub(T.rev), '−' + rub(T.retSum), '−' + rub(T.comm), '−' + rub(T.log), T.fine ? '−' + rub(T.fine) : '—', rub(T.payGoods), pct(T.netRev ? T.payGoods / T.netRev : NaN), pct(T.buyout)]
+  const TT = S.total; const tf = document.createElement('tfoot'); const fr = document.createElement('tr');
+  [T('Итого'), '', '', int(TT.qty), rub(TT.rev), '−' + rub(TT.retSum), '−' + rub(TT.comm), '−' + rub(TT.log), TT.fine ? '−' + rub(TT.fine) : '—', rub(TT.payGoods), pct(TT.netRev ? TT.payGoods / TT.netRev : NaN), pct(TT.buyout)]
     .forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; if (cols[i][1]) td.className = cols[i][1]; fr.append(td); });
   tf.append(fr); t.append(tf);
 }
@@ -545,22 +672,42 @@ function detail(S, s) {
     rows.forEach(r => { const tr = document.createElement('tr'); r.forEach((x, i) => { const td = document.createElement('td'); if (Array.isArray(x)) { td.textContent = x[0]; td.className = x[1]; } else td.textContent = x; if (!i) td.classList.add('l'); tr.append(td); }); tb.append(tr); });
     box.append(h, tb); return box; };
   const share = v => pct(a.rev ? v / a.rev : NaN);
-  wrap.append(mk('Доходы и расходы', ['Статья', 'Сумма', 'От выручки'], [
-    ['Продажи (' + int(a.qty) + ' шт)', [rub(a.rev), 'pos'], '100%'],
-    ['Возвраты (' + int(a.retQty) + ' шт)', ['−' + rub(a.retSum), 'negv'], share(a.retSum)],
-    ['Комиссия маркетплейса с НДС', ['−' + rub(a.comm), 'negv'], share(a.comm)],
-    ['Логистика к покупателю и обратно', ['−' + rub(a.log), 'negv'], share(a.log)],
-    ['Штрафы', [a.fine ? '−' + rub(a.fine) : '—', a.fine ? 'negv' : ''], share(a.fine)],
-    ['К перечислению', [rub(a.payGoods), ''], share(a.payGoods)],
+  wrap.append(mk(T('Доходы и расходы'), [T('Статья'), T('Сумма'), T('От выручки')], [
+    [T('Продажи (') + int(a.qty) + T(' шт)'), [rub(a.rev), 'pos'], '100%'],
+    [T('Возвраты (') + int(a.retQty) + T(' шт)'), ['−' + rub(a.retSum), 'negv'], share(a.retSum)],
+    [T('Комиссия маркетплейса с НДС'), ['−' + rub(a.comm), 'negv'], share(a.comm)],
+    [T('Логистика к покупателю и обратно'), ['−' + rub(a.log), 'negv'], share(a.log)],
+    [T('Штрафы'), [a.fine ? '−' + rub(a.fine) : '—', a.fine ? 'negv' : ''], share(a.fine)],
+    [T('К перечислению'), [rub(a.payGoods), ''], share(a.payGoods)],
   ]));
-  wrap.append(mk('По дням', ['День', 'Продано', 'Выручка', 'Логистика'], S.days.map(d => { const c = S.bySkuDay[s][d] || zero(); return [dayLbl(d) + ', ' + wd(d), int(c.qty), rub(c.rev), rub(c.log)]; })));
-  wrap.append(mk('Показатели', ['Показатель', 'Значение'], [
-    ['Категория', SKU[s].cat], ['Доставок покупателям', int(a.deliv)], ['Отказов при получении', int(a.back)], ['Процент выкупа', pct(a.buyout)],
-    ['Средняя цена продажи', a.qty ? rub(a.rev / a.qty) : '—'], ['Остаётся с 1 шт', a.netQty > 0 ? rub(a.payGoods / a.netQty) : '—'], ['Класс ABC', S.abc[s]],
+  wrap.append(mk(T('По дням'), [T('День'), T('Продано'), T('Выручка'), T('Логистика')], S.days.map(d => { const c = S.bySkuDay[s][d] || zero(); return [dayLbl(d) + ', ' + wd(d), int(c.qty), rub(c.rev), rub(c.log)]; })));
+  wrap.append(mk(T('Показатели'), [T('Показатель'), T('Значение')], [
+    [T('Категория'), T(SKU[s].cat)], [T('Доставок покупателям'), int(a.deliv)], [T('Отказов при получении'), int(a.back)], [T('Процент выкупа'), pct(a.buyout)],
+    [T('Средняя цена продажи'), a.qty ? rub(a.rev / a.qty) : '—'], [T('Остаётся с 1 шт'), a.netQty > 0 ? rub(a.payGoods / a.netQty) : '—'], [T('Класс ABC'), S.abc[s]],
   ]));
   return wrap;
 }
 
+
+/* ---------- переключатель языка ---------- */
+const STATIC = [...document.querySelectorAll('h1, h2, label, .badge, .note, #fReset, #fMetric button')].filter(el => /[А-Яа-яЁё]/.test(el.textContent));
+STATIC.forEach(el => { el.dataset.t = el.textContent; });
+const ARIA = [...document.querySelectorAll('[aria-label]')].filter(el => /[А-Яа-яЁё]/.test(el.getAttribute('aria-label')));
+ARIA.forEach(el => { el.dataset.ta = el.getAttribute('aria-label'); });
+const TITLE0 = document.title;
+function applyStatic() {
+  STATIC.forEach(el => { el.textContent = T(el.dataset.t); });
+  ARIA.forEach(el => el.setAttribute('aria-label', T(el.dataset.ta)));
+  document.title = T(TITLE0);
+  document.documentElement.lang = LANG;
+  document.querySelectorAll('#fLang button').forEach(b => b.setAttribute('aria-pressed', b.dataset.l === LANG));
+}
+function setLang(l) {
+  LANG = l; try { localStorage.setItem('dash-lang', l); } catch (e) {}
+  applyStatic(); baseOptions(); themeLabel(); render();
+}
+document.querySelector('#fLang').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setLang(b.dataset.l); });
+applyStatic(); baseOptions();
 themeLabel(); render();
 let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 150); });
 </script>
