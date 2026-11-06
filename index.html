@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light}body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Продажи ДомУют за неделю</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;600&display=swap">
+<style>
+/* Layout: шапка с фильтрами → плитки итогов → сетка графиков (2 колонки, на телефоне 1) → таблица артикулов */
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --line: #e3e6ec; --grid: #eceef2;
+  --fg: #14171c; --fg2: #4d5461; --muted: #7a818e;
+  --accent: #2a78d6; --accent-soft: #e6effb;
+  --neg: #e34948; --good: #0ca30c; --warn: #fab219; --serious: #ec835a; --crit: #d03b3b;
+  --s1:#2a78d6; --s2:#eb6834; --s3:#1baf7a; --s4:#eda100; --s5:#e87ba4; --s6:#008300; --s7:#6250d6; --s8:#e34948;
+  --font-display: "Unbounded", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Golos Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#121417; --panel:#1a1d21; --line:#2c3037; --grid:#262a30;
+  --fg:#eef0f3; --fg2:#c0c5cd; --muted:#8d94a0; --accent:#3987e5; --accent-soft:#1d2a3b; --neg:#e66767;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+  color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg:#121417; --panel:#1a1d21; --line:#2c3037; --grid:#262a30;
+  --fg:#eef0f3; --fg2:#c0c5cd; --muted:#8d94a0; --accent:#3987e5; --accent-soft:#1d2a3b; --neg:#e66767;
+  --s1:#3987e5; --s2:#d95926; --s3:#199e70; --s4:#c98500; --s5:#d55181; --s6:#008300; --s7:#9085e9; --s8:#e66767;
+  color-scheme: dark; }
+
+body { background: var(--bg); color: var(--fg); font-family: var(--font-body); font-size: 14px; line-height: 1.45; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-block: 20px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 20px; }
+.num, td, .kpi-v, .legend { font-variant-numeric: tabular-nums; }
+
+header.top { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; justify-content: space-between; }
+header.top h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(20px, 3vw, 28px); margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+.sub { color: var(--fg2); margin-top: 4px; }
+.badge { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
+  color: var(--fg2); background: var(--panel); border: 1px dashed var(--muted); border-radius: 999px; padding: 3px 10px; }
+
+.filters { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; background: var(--panel); border: 1px solid var(--line);
+  border-radius: var(--r); padding: 12px 14px; position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; }
+.f { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.f label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+select, button { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
+select { max-width: 100%; }
+button { cursor: pointer; }
+button:hover, select:hover { border-color: var(--muted); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; border-radius: 0; background: transparent; padding: 6px 12px; }
+.seg button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+.spacer { flex: 1; }
+
+.kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.kpi { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.kpi-l { font-size: 12px; color: var(--fg2); }
+.kpi-v { font-family: var(--font-display); font-weight: 500; font-size: 22px; letter-spacing: -0.01em; }
+.kpi-h { font-size: 12px; color: var(--muted); }
+
+.grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; align-items: start; }
+.grid .wide { grid-column: 1 / -1; }
+@media (max-width: 860px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; min-width: 0; display: flex; flex-direction: column; gap: 10px; }
+.card h2 { font-size: 15px; font-weight: 600; margin: 0; }
+.card .note { color: var(--muted); font-size: 12px; margin: -6px 0 0; }
+.chart { width: 100%; position: relative; }
+svg text { fill: var(--muted); font-family: var(--font-body); font-size: 11px; }
+svg .lbl { fill: var(--fg2); }
+svg .val { fill: var(--fg); font-weight: 600; }
+.axis path, .axis line { stroke: var(--line); }
+.gridline line { stroke: var(--grid); }
+.gridline path { display: none; }
+
+.donut-wrap { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+.donut-wrap .chart { flex: 0 0 200px; width: 200px; }
+.legend { flex: 1 1 220px; min-width: 0; display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0; list-style: none; font-size: 13px; }
+.legend li { display: grid; grid-template-columns: 12px minmax(0,1fr) auto auto; gap: 8px; align-items: center; padding: 2px 0; }
+.legend .sw { width: 12px; height: 12px; border-radius: 3px; }
+.legend .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fg); }
+.legend .v { color: var(--fg2); text-align: right; }
+.legend .p { color: var(--muted); text-align: right; min-width: 3.5em; }
+.legend.inline { flex: none; flex-direction: row; flex-wrap: wrap; gap: 6px 16px; }
+.legend.inline li { display: flex; }
+
+.multiples { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
+.mini { border: 1px solid var(--line); border-radius: 8px; padding: 10px; min-width: 0; }
+.mini h3 { margin: 0 0 2px; font-size: 13px; font-weight: 600; display: flex; gap: 6px; align-items: center; }
+.mini .meta { font-size: 12px; color: var(--muted); }
+.dot { width: 10px; height: 10px; border-radius: 50%; flex: none; }
+
+.problems { display: flex; flex-direction: column; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.problems li { display: grid; grid-template-columns: auto minmax(0,1fr); gap: 10px; align-items: start; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; }
+.chip { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; border-radius: 999px; padding: 2px 8px; white-space: nowrap; color: #14171c; }
+.chip.crit { background: var(--crit); color: #fff; }
+.chip.serious { background: var(--serious); }
+.chip.warn { background: var(--warn); }
+.chip.ok { background: var(--good); color: #fff; }
+.problems b { font-weight: 600; }
+.problems .d { color: var(--fg2); font-size: 13px; }
+
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th { text-align: right; font-weight: 600; font-size: 12px; color: var(--muted); padding: 8px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { text-align: right; padding: 8px 10px; border-bottom: 1px solid var(--grid); white-space: nowrap; }
+th:first-child, td:first-child, th.l, td.l { text-align: left; }
+tr.main { cursor: pointer; }
+tr.main:hover td { background: var(--accent-soft); }
+tr.main td:first-child { font-weight: 600; }
+.caret { display: inline-block; width: 1em; color: var(--muted); transition: transform .15s; }
+tr.main[aria-expanded="true"] .caret { transform: rotate(90deg); }
+tr.detail > td { background: var(--bg); padding: 14px 16px; white-space: normal; text-align: left; }
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.detail-grid h4 { margin: 0 0 6px; font-size: 13px; }
+.detail-grid table td, .detail-grid table th { padding: 5px 8px; }
+.pos { color: var(--good); } .negv { color: var(--neg); }
+tfoot td { font-weight: 700; border-top: 1px solid var(--line); border-bottom: 0; }
+.abc { display: inline-block; min-width: 22px; text-align: center; font-weight: 700; border-radius: 6px; padding: 1px 6px; background: var(--accent-soft); color: var(--accent); }
+
+#tip { position: fixed; pointer-events: none; z-index: 50; background: var(--panel); color: var(--fg); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 10px; font-size: 12px; box-shadow: 0 6px 20px rgba(0,0,0,.15); max-width: 260px; font-variant-numeric: tabular-nums; }
+#tip .t { font-weight: 600; margin-bottom: 4px; }
+#tip .r { display: flex; justify-content: space-between; gap: 14px; }
+#tip .r span:first-child { color: var(--fg2); }
+footer { color: var(--muted); font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <span class="badge">Учебные данные</span>
+      <h1 id="title">Отчёт о реализации ДомУют</h1>
+      <div class="sub" id="subtitle">—</div>
+    </div>
+    <button id="theme" type="button" aria-label="Переключить тему">Тёмная тема</button>
+  </header>
+
+  <div class="filters" role="group" aria-label="Фильтры">
+    <div class="f"><label for="fFrom">С</label><select id="fFrom"></select></div>
+    <div class="f"><label for="fTo">По</label><select id="fTo"></select></div>
+    <div class="f"><label for="fCat">Категория</label><select id="fCat"></select></div>
+    <div class="f"><label for="fSku">Артикул</label><select id="fSku"></select></div>
+    <div class="f"><label>Показатель</label>
+      <div class="seg" id="fMetric"><button type="button" data-m="rev" aria-pressed="true">Выручка, ₽</button><button type="button" data-m="qty" aria-pressed="false">Штуки</button></div>
+    </div>
+    <div class="spacer"></div>
+    <button id="fReset" type="button">Сбросить</button>
+  </div>
+
+  <section class="kpis" id="kpis" aria-label="Итоги периода"></section>
+
+  <div class="grid">
+    <section class="card"><h2 id="h-trend">Динамика продаж</h2><p class="note" id="n-trend">По дням, за вычетом возвратов не считается — это продажи</p><div class="chart" id="c-trend"></div></section>
+    <section class="card"><h2>Структура по артикулам</h2><p class="note" id="n-donut">Доля в выручке</p>
+      <div class="donut-wrap"><div class="chart" id="c-donut"></div><ul class="legend" id="l-donut"></ul></div></section>
+
+    <section class="card wide"><h2>Продажи по дням в разрезе артикулов</h2><p class="note" id="n-mult">Общая шкала для всех артикулов</p><div class="multiples" id="c-mult"></div></section>
+
+    <section class="card wide"><h2>От выручки к деньгам на счёте</h2><p class="note" id="n-wf">Что удержал маркетплейс за период</p><div class="chart" id="c-wf"></div></section>
+
+    <section class="card"><h2>Процент выкупа</h2><p class="note">Выкуплено из доставленных покупателю. Ниже 70% — повод разобраться</p><div class="chart" id="c-buy"></div></section>
+    <section class="card"><h2>Юнит-экономика одной продажи</h2><p class="note">Из чего складывается средняя цена продажи, ₽ за штуку. Себестоимость не учтена</p>
+      <ul class="legend inline" id="l-unit"></ul><div class="chart" id="c-unit"></div></section>
+
+    <section class="card"><h2>Проблемные позиции</h2><ul class="problems" id="problems"></ul></section>
+    <section class="card"><h2>Общие расходы без привязки к артикулу</h2><p class="note">Не распределены по товарам — показаны отдельно</p><div class="tbl-wrap"><table id="t-gen"></table></div></section>
+
+    <section class="card wide"><h2>Артикулы: доходы и расходы</h2><p class="note">Нажмите на строку, чтобы раскрыть статьи и продажи по дням. ABC — по выручке за период</p>
+      <div class="tbl-wrap"><table id="t-sku"></table></div></section>
+  </div>
+  <footer id="foot">—</footer>
+</div>
+<div id="tip" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script>
+const DATA = {"period": ["2026-10-26", "2026-11-01"], "source": "Отчёт о реализации 26.10-01.11.2026.xlsx", "rowsInSource": 2255, "skus": [{"sku": "UMB-AUTO-BLK", "name": "Зонт автомат чёрный", "cat": "Зонты"}, {"sku": "UMB-CANE-XL", "name": "Зонт-трость XL", "cat": "Зонты"}, {"sku": "TOY-BEAR-40", "name": "Плюшевый медведь 40 см", "cat": "Игрушки мягкие"}, {"sku": "TOY-BLOCK-500", "name": "Конструктор 500 деталей", "cat": "Конструкторы"}, {"sku": "MUG-CERAMIC", "name": "Кружка керамическая 350 мл", "cat": "Кружки"}, {"sku": "MUG-THERMO", "name": "Термокружка 450 мл", "cat": "Кружки"}, {"sku": "SOCK-SET-5", "name": "Носки набор 5 пар", "cat": "Носки"}, {"sku": "SOCK-WOOL-2", "name": "Носки шерстяные 2 пары", "cat": "Носки"}], "cells": [{"d": "2026-10-26", "sku": "MUG-CERAMIC", "qty": 6, "rev": 3020.8, "retQty": 0, "retSum": 0.0, "comm": 351.13, "log": 721.22, "fine": 0.0, "deliv": 7, "back": 1, "negComm": 2}, {"d": "2026-10-26", "sku": "MUG-THERMO", "qty": 16, "rev": 15088.05, "retQty": 0, "retSum": 0.0, "comm": 3017.63, "log": 1177.83, "fine": 0.0, "deliv": 16, "back": 0, "negComm": 0}, {"d": "2026-10-26", "sku": "SOCK-SET-5", "qty": 13, "rev": 3967.64, "retQty": 0, "retSum": 0.0, "comm": 991.92, "log": 4182.72, "fine": 0.0, "deliv": 34, "back": 21, "negComm": 0}, {"d": "2026-10-26", "sku": "SOCK-WOOL-2", "qty": 11, "rev": 6465.52, "retQty": 1, "retSum": 594.0, "comm": 1467.9, "log": 813.65, "fine": 0.0, "deliv": 12, "back": 1, "negComm": 0}, {"d": "2026-10-26", "sku": "TOY-BEAR-40", "qty": 20, "rev": 27013.05, "retQty": 1, "retSum": 1369.5, "comm": 5385.16, "log": 1752.17, "fine": 0.0, "deliv": 21, "back": 1, "negComm": 0}, {"d": "2026-10-26", "sku": "TOY-BLOCK-500", "qty": 13, "rev": 30721.38, "retQty": 0, "retSum": 0.0, "comm": 5837.06, "log": 1466.66, "fine": 0.0, "deliv": 14, "back": 1, "negComm": 0}, {"d": "2026-10-26", "sku": "UMB-AUTO-BLK", "qty": 17, "rev": 18379.23, "retQty": 0, "retSum": 0.0, "comm": 4227.22, "log": 1753.87, "fine": 0.0, "deliv": 21, "back": 4, "negComm": 0}, {"d": "2026-10-26", "sku": "UMB-CANE-XL", "qty": 8, "rev": 12462.16, "retQty": 1, "retSum": 1589.5, "comm": 2500.72, "log": 1414.92, "fine": 0.0, "deliv": 9, "back": 1, "negComm": 0}, {"d": "2026-10-27", "sku": "MUG-CERAMIC", "qty": 10, "rev": 5062.3, "retQty": 0, "retSum": 0.0, "comm": 503.26, "log": 1263.83, "fine": 0.0, "deliv": 12, "back": 2, "negComm": 4}, {"d": "2026-10-27", "sku": "MUG-THERMO", "qty": 12, "rev": 11305.87, "retQty": 0, "retSum": 0.0, "comm": 2261.17, "log": 1038.7, "fine": 0.0, "deliv": 13, "back": 1, "negComm": 0}, {"d": "2026-10-27", "sku": "SOCK-SET-5", "qty": 19, "rev": 5800.67, "retQty": 0, "retSum": 0.0, "comm": 1450.16, "log": 3560.87, "fine": 0.0, "deliv": 33, "back": 14, "negComm": 0}, {"d": "2026-10-27", "sku": "SOCK-WOOL-2", "qty": 19, "rev": 11114.69, "retQty": 0, "retSum": 0.0, "comm": 2778.7, "log": 1441.01, "fine": 0.0, "deliv": 21, "back": 2, "negComm": 0}, {"d": "2026-10-27", "sku": "TOY-BEAR-40", "qty": 19, "rev": 25488.22, "retQty": 0, "retSum": 0.0, "comm": 5352.53, "log": 1903.32, "fine": 0.0, "deliv": 21, "back": 2, "negComm": 0}, {"d": "2026-10-27", "sku": "TOY-BLOCK-500", "qty": 12, "rev": 28316.54, "retQty": 0, "retSum": 0.0, "comm": 5380.15, "log": 1560.06, "fine": 0.0, "deliv": 14, "back": 2, "negComm": 0}, {"d": "2026-10-27", "sku": "UMB-AUTO-BLK", "qty": 19, "rev": 20511.32, "retQty": 0, "retSum": 0.0, "comm": 4717.61, "log": 1452.19, "fine": 0.0, "deliv": 20, "back": 1, "negComm": 0}, {"d": "2026-10-27", "sku": "UMB-CANE-XL", "qty": 10, "rev": 15669.97, "retQty": 0, "retSum": 0.0, "comm": 3604.08, "log": 1768.17, "fine": 0.0, "deliv": 11, "back": 1, "negComm": 0}, {"d": "2026-10-28", "sku": "MUG-CERAMIC", "qty": 10, "rev": 5041.69, "retQty": 1, "retSum": 513.5, "comm": 655.56, "log": 1656.43, "fine": 0.0, "deliv": 14, "back": 4, "negComm": 2}, {"d": "2026-10-28", "sku": "MUG-THERMO", "qty": 23, "rev": 21566.06, "retQty": 1, "retSum": 954.0, "comm": 4122.37, "log": 1694.61, "fine": 0.0, "deliv": 23, "back": 0, "negComm": 0}, {"d": "2026-10-28", "sku": "SOCK-SET-5", "qty": 26, "rev": 7947.67, "retQty": 1, "retSum": 310.5, "comm": 1909.28, "log": 4865.19, "fine": 0.0, "deliv": 45, "back": 19, "negComm": 0}, {"d": "2026-10-28", "sku": "SOCK-WOOL-2", "qty": 19, "rev": 11130.68, "retQty": 0, "retSum": 0.0, "comm": 2782.68, "log": 1319.96, "fine": 0.0, "deliv": 20, "back": 1, "negComm": 0}, {"d": "2026-10-28", "sku": "TOY-BEAR-40", "qty": 21, "rev": 28336.43, "retQty": 0, "retSum": 0.0, "comm": 5950.64, "log": 1724.74, "fine": 0.0, "deliv": 21, "back": 0, "negComm": 0}, {"d": "2026-10-28", "sku": "TOY-BLOCK-500", "qty": 17, "rev": 40081.76, "retQty": 0, "retSum": 0.0, "comm": 7615.57, "log": 1844.74, "fine": 0.0, "deliv": 18, "back": 1, "negComm": 0}, {"d": "2026-10-28", "sku": "UMB-AUTO-BLK", "qty": 21, "rev": 22675.25, "retQty": 1, "retSum": 1095.0, "comm": 4963.44, "log": 1820.14, "fine": 0.0, "deliv": 24, "back": 3, "negComm": 0}, {"d": "2026-10-28", "sku": "UMB-CANE-XL", "qty": 8, "rev": 12600.65, "retQty": 0, "retSum": 0.0, "comm": 2898.16, "log": 1410.02, "fine": 0.0, "deliv": 9, "back": 1, "negComm": 0}, {"d": "2026-10-29", "sku": "MUG-CERAMIC", "qty": 8, "rev": 4036.84, "retQty": 0, "retSum": 0.0, "comm": 555.74, "log": 1053.83, "fine": 0.0, "deliv": 10, "back": 2, "negComm": 2}, {"d": "2026-10-29", "sku": "MUG-THERMO", "qty": 14, "rev": 13166.56, "retQty": 0, "retSum": 0.0, "comm": 2633.3, "log": 1438.09, "fine": 0.0, "deliv": 17, "back": 3, "negComm": 0}, {"d": "2026-10-29", "sku": "SOCK-SET-5", "qty": 12, "rev": 3667.31, "retQty": 0, "retSum": 0.0, "comm": 916.84, "log": 3560.92, "fine": 0.0, "deliv": 29, "back": 17, "negComm": 0}, {"d": "2026-10-29", "sku": "SOCK-WOOL-2", "qty": 10, "rev": 5862.33, "retQty": 0, "retSum": 0.0, "comm": 1465.59, "log": 914.02, "fine": 0.0, "deliv": 12, "back": 2, "negComm": 0}, {"d": "2026-10-29", "sku": "TOY-BEAR-40", "qty": 18, "rev": 24249.97, "retQty": 1, "retSum": 1369.5, "comm": 4804.87, "log": 1630.25, "fine": 0.0, "deliv": 19, "back": 1, "negComm": 0}, {"d": "2026-10-29", "sku": "TOY-BLOCK-500", "qty": 16, "rev": 37674.13, "retQty": 0, "retSum": 0.0, "comm": 7158.09, "log": 1605.11, "fine": 0.0, "deliv": 16, "back": 0, "negComm": 0}, {"d": "2026-10-29", "sku": "UMB-AUTO-BLK", "qty": 14, "rev": 15084.47, "retQty": 0, "retSum": 0.0, "comm": 3469.44, "log": 2364.91, "fine": 0.0, "deliv": 24, "back": 10, "negComm": 0}, {"d": "2026-10-29", "sku": "UMB-CANE-XL", "qty": 6, "rev": 9456.12, "retQty": 0, "retSum": 0.0, "comm": 2174.89, "log": 1706.03, "fine": 1500.0, "deliv": 9, "back": 3, "negComm": 0}, {"d": "2026-10-30", "sku": "MUG-CERAMIC", "qty": 8, "rev": 4046.97, "retQty": 0, "retSum": 0.0, "comm": 683.41, "log": 1070.71, "fine": 0.0, "deliv": 10, "back": 2, "negComm": 1}, {"d": "2026-10-30", "sku": "MUG-THERMO", "qty": 14, "rev": 13172.27, "retQty": 1, "retSum": 954.0, "comm": 2443.67, "log": 1532.14, "fine": 0.0, "deliv": 17, "back": 3, "negComm": 0}, {"d": "2026-10-30", "sku": "SOCK-SET-5", "qty": 16, "rev": 4895.17, "retQty": 0, "retSum": 0.0, "comm": 1223.83, "log": 2888.0, "fine": 0.0, "deliv": 27, "back": 11, "negComm": 0}, {"d": "2026-10-30", "sku": "SOCK-WOOL-2", "qty": 18, "rev": 10580.66, "retQty": 0, "retSum": 0.0, "comm": 2645.17, "log": 1388.36, "fine": 0.0, "deliv": 20, "back": 2, "negComm": 0}, {"d": "2026-10-30", "sku": "TOY-BEAR-40", "qty": 26, "rev": 35056.28, "retQty": 0, "retSum": 0.0, "comm": 7361.86, "log": 2515.86, "fine": 0.0, "deliv": 28, "back": 2, "negComm": 0}, {"d": "2026-10-30", "sku": "TOY-BLOCK-500", "qty": 13, "rev": 30632.93, "retQty": 0, "retSum": 0.0, "comm": 5820.27, "log": 1321.29, "fine": 0.0, "deliv": 13, "back": 0, "negComm": 0}, {"d": "2026-10-30", "sku": "UMB-AUTO-BLK", "qty": 17, "rev": 18303.37, "retQty": 0, "retSum": 0.0, "comm": 4209.8, "log": 1744.78, "fine": 0.0, "deliv": 21, "back": 4, "negComm": 0}, {"d": "2026-10-30", "sku": "UMB-CANE-XL", "qty": 3, "rev": 4720.64, "retQty": 0, "retSum": 0.0, "comm": 1085.75, "log": 1182.68, "fine": 0.0, "deliv": 6, "back": 3, "negComm": 0}, {"d": "2026-10-31", "sku": "MUG-CERAMIC", "qty": 12, "rev": 6084.83, "retQty": 0, "retSum": 0.0, "comm": 1088.89, "log": 1728.4, "fine": 0.0, "deliv": 16, "back": 4, "negComm": 1}, {"d": "2026-10-31", "sku": "MUG-THERMO", "qty": 17, "rev": 15929.39, "retQty": 0, "retSum": 0.0, "comm": 3185.92, "log": 1688.7, "fine": 0.0, "deliv": 20, "back": 3, "negComm": 0}, {"d": "2026-10-31", "sku": "SOCK-SET-5", "qty": 26, "rev": 7957.69, "retQty": 1, "retSum": 310.5, "comm": 1911.81, "log": 5095.85, "fine": 0.0, "deliv": 46, "back": 20, "negComm": 0}, {"d": "2026-10-31", "sku": "SOCK-WOOL-2", "qty": 14, "rev": 8181.92, "retQty": 1, "retSum": 594.0, "comm": 1896.98, "log": 1408.59, "fine": 0.0, "deliv": 18, "back": 4, "negComm": 0}, {"d": "2026-10-31", "sku": "TOY-BEAR-40", "qty": 26, "rev": 35085.92, "retQty": 1, "retSum": 1369.5, "comm": 7080.45, "log": 2311.04, "fine": 0.0, "deliv": 27, "back": 1, "negComm": 0}, {"d": "2026-10-31", "sku": "TOY-BLOCK-500", "qty": 18, "rev": 42402.78, "retQty": 1, "retSum": 2394.0, "comm": 7601.7, "log": 1813.54, "fine": 0.0, "deliv": 18, "back": 0, "negComm": 0}, {"d": "2026-10-31", "sku": "UMB-AUTO-BLK", "qty": 29, "rev": 31306.77, "retQty": 0, "retSum": 0.0, "comm": 7200.62, "log": 3032.77, "fine": 0.0, "deliv": 36, "back": 7, "negComm": 0}, {"d": "2026-10-31", "sku": "UMB-CANE-XL", "qty": 7, "rev": 10922.86, "retQty": 0, "retSum": 0.0, "comm": 2512.28, "log": 1792.79, "fine": 0.0, "deliv": 10, "back": 3, "negComm": 0}, {"d": "2026-11-01", "sku": "MUG-CERAMIC", "qty": 13, "rev": 6575.52, "retQty": 0, "retSum": 0.0, "comm": 1315.13, "log": 1632.18, "fine": 0.0, "deliv": 15, "back": 2, "negComm": 0}, {"d": "2026-11-01", "sku": "MUG-THERMO", "qty": 19, "rev": 17899.07, "retQty": 1, "retSum": 954.0, "comm": 3389.05, "log": 2017.56, "fine": 0.0, "deliv": 23, "back": 4, "negComm": 0}, {"d": "2026-11-01", "sku": "SOCK-SET-5", "qty": 18, "rev": 5508.2, "retQty": 1, "retSum": 310.5, "comm": 1299.41, "log": 3616.46, "fine": 0.0, "deliv": 33, "back": 15, "negComm": 0}, {"d": "2026-11-01", "sku": "SOCK-WOOL-2", "qty": 17, "rev": 9962.71, "retQty": 0, "retSum": 0.0, "comm": 2490.66, "log": 1624.31, "fine": 0.0, "deliv": 21, "back": 4, "negComm": 0}, {"d": "2026-11-01", "sku": "TOY-BEAR-40", "qty": 26, "rev": 35070.95, "retQty": 1, "retSum": 1369.5, "comm": 7077.32, "log": 2456.93, "fine": 0.0, "deliv": 28, "back": 2, "negComm": 0}, {"d": "2026-11-01", "sku": "TOY-BLOCK-500", "qty": 21, "rev": 49493.11, "retQty": 1, "retSum": 2394.0, "comm": 8948.85, "log": 2001.72, "fine": 0.0, "deliv": 21, "back": 0, "negComm": 0}, {"d": "2026-11-01", "sku": "UMB-AUTO-BLK", "qty": 34, "rev": 36574.36, "retQty": 0, "retSum": 0.0, "comm": 8412.08, "log": 2897.01, "fine": 0.0, "deliv": 39, "back": 5, "negComm": 0}, {"d": "2026-11-01", "sku": "UMB-CANE-XL", "qty": 5, "rev": 7832.95, "retQty": 0, "retSum": 0.0, "comm": 1801.58, "log": 2303.96, "fine": 0.0, "deliv": 11, "back": 6, "negComm": 0}], "general": [{"d": "2026-10-26", "item": "Платная приёмка", "sum": 2800.0}, {"d": "2026-10-26", "item": "Хранение", "sum": 2015.18}, {"d": "2026-10-27", "item": "Хранение", "sum": 2091.99}, {"d": "2026-10-28", "item": "Удержание", "sum": 4350.0}, {"d": "2026-10-28", "item": "Хранение", "sum": 1955.28}, {"d": "2026-10-29", "item": "Хранение", "sum": 1795.91}, {"d": "2026-10-30", "item": "Возмещение издержек", "sum": -1240.0}, {"d": "2026-10-30", "item": "Хранение", "sum": 2089.13}, {"d": "2026-10-31", "item": "Хранение", "sum": 1909.19}, {"d": "2026-11-01", "item": "Удержание", "sum": 12000.0}, {"d": "2026-11-01", "item": "Хранение", "sum": 1711.8}], "payout": 594203.51};
+const $ = s => document.querySelector(s);
+const rub = v => new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 0}).format(Math.round(v)) + ' ₽';
+const rubK = v => Math.abs(v) >= 1000 ? new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 1}).format(v / 1000) + ' тыс' : Math.round(v) + '';
+const int = v => new Intl.NumberFormat('ru-RU').format(Math.round(v));
+const pct = v => isFinite(v) ? new Intl.NumberFormat('ru-RU', {maximumFractionDigits: 1}).format(v * 100) + '%' : '—';
+const dayLbl = d => { const [y, m, dd] = d.split('-'); return dd + '.' + m; };
+const WD = ['вс','пн','вт','ср','чт','пт','сб'];
+const wd = d => WD[new Date(d + 'T00:00:00').getDay()];
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+const SKUS = DATA.skus;
+const SKU = Object.fromEntries(SKUS.map((s, i) => [s.sku, {...s, slot: i + 1}]));
+const DAYS = [...new Set(DATA.cells.map(c => c.d))].sort();
+const CATS = [...new Set(SKUS.map(s => s.cat))];
+const color = sku => css('--s' + SKU[sku].slot);
+const state = {from: DAYS[0], to: DAYS[DAYS.length - 1], cat: 'all', sku: 'all', metric: 'rev'};
+
+/* ---------- фильтры ---------- */
+function opt(sel, items) { sel.replaceChildren(...items.map(([v, t]) => { const o = document.createElement('option'); o.value = v; o.textContent = t; return o; })); }
+opt($('#fFrom'), DAYS.map(d => [d, dayLbl(d) + ', ' + wd(d)]));
+opt($('#fTo'), DAYS.map(d => [d, dayLbl(d) + ', ' + wd(d)]));
+opt($('#fCat'), [['all', 'Все категории'], ...CATS.map(c => [c, c])]);
+function skuOptions() {
+  const list = SKUS.filter(s => state.cat === 'all' || s.cat === state.cat);
+  opt($('#fSku'), [['all', 'Все артикулы'], ...list.map(s => [s.sku, s.sku + ' · ' + s.name])]);
+  if (state.sku !== 'all' && !list.some(s => s.sku === state.sku)) state.sku = 'all';
+  $('#fSku').value = state.sku;
+}
+function syncControls() {
+  $('#fFrom').value = state.from; $('#fTo').value = state.to; $('#fCat').value = state.cat; skuOptions();
+  document.querySelectorAll('#fMetric button').forEach(b => b.setAttribute('aria-pressed', b.dataset.m === state.metric));
+}
+$('#fFrom').addEventListener('change', e => { state.from = e.target.value; if (state.to < state.from) state.to = state.from; render(); });
+$('#fTo').addEventListener('change', e => { state.to = e.target.value; if (state.from > state.to) state.from = state.to; render(); });
+$('#fCat').addEventListener('change', e => { state.cat = e.target.value; render(); });
+$('#fSku').addEventListener('change', e => { state.sku = e.target.value; render(); });
+$('#fMetric').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { state.metric = b.dataset.m; render(); } });
+$('#fReset').addEventListener('click', () => { Object.assign(state, {from: DAYS[0], to: DAYS[DAYS.length - 1], cat: 'all', sku: 'all', metric: 'rev'}); render(); });
+
+/* тема */
+function isDark() { const t = document.documentElement.dataset.theme; return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
+function themeLabel() { $('#theme').textContent = isDark() ? 'Светлая тема' : 'Тёмная тема'; }
+$('#theme').addEventListener('click', () => { document.documentElement.dataset.theme = isDark() ? 'light' : 'dark'; themeLabel(); render(); });
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { themeLabel(); render(); });
+new MutationObserver(() => { themeLabel(); render(); }).observe(document.documentElement, {attributes: true, attributeFilter: ['data-theme']});
+
+/* ---------- подсказка ---------- */
+const tip = $('#tip');
+function showTip(ev, title, rows) {
+  tip.replaceChildren();
+  const t = document.createElement('div'); t.className = 't'; t.textContent = title; tip.append(t);
+  rows.forEach(([k, v]) => { const r = document.createElement('div'); r.className = 'r'; const a = document.createElement('span'); a.textContent = k; const b = document.createElement('span'); b.textContent = v; r.append(a, b); tip.append(r); });
+  tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight, vw = document.documentElement.clientWidth, vh = window.innerHeight;
+  let x = ev.clientX + 14, y = ev.clientY + 14;
+  if (x + w > vw - 8) x = ev.clientX - w - 14;
+  if (y + h > vh - 8) y = ev.clientY - h - 14;
+  tip.style.left = Math.max(8, x) + 'px'; tip.style.top = Math.max(8, y) + 'px';
+}
+const hideTip = () => { tip.hidden = true; };
+
+/* ---------- агрегаты ---------- */
+const FIELDS = ['qty', 'rev', 'retQty', 'retSum', 'comm', 'log', 'fine', 'deliv', 'back', 'negComm'];
+const zero = () => Object.fromEntries(FIELDS.map(f => [f, 0]));
+function add(a, c) { FIELDS.forEach(f => a[f] += c[f]); return a; }
+function inSel(c) {
+  if (c.d < state.from || c.d > state.to) return false;
+  if (state.sku !== 'all') return c.sku === state.sku;
+  return state.cat === 'all' || SKU[c.sku].cat === state.cat;
+}
+function derive(a) {
+  a.netRev = a.rev - a.retSum;
+  a.payGoods = a.netRev - a.comm - a.log - a.fine;   // к перечислению по товару
+  a.buyout = a.deliv ? a.qty / a.deliv : NaN;
+  a.netQty = a.qty - a.retQty;
+  return a;
+}
+const mval = a => state.metric === 'rev' ? a.rev : a.qty;
+const mfmt = v => state.metric === 'rev' ? rub(v) : int(v) + ' шт';
+const maxis = v => state.metric === 'rev' ? rubK(v) : int(v);
+
+function compute() {
+  const cells = DATA.cells.filter(inSel);
+  const total = derive(cells.reduce(add, zero()));
+  const bySku = {}; const byDay = {}; const bySkuDay = {};
+  cells.forEach(c => {
+    add(bySku[c.sku] ||= zero(), c);
+    add(byDay[c.d] ||= zero(), c);
+    add((bySkuDay[c.sku] ||= {})[c.d] ||= zero(), c);
+  });
+  Object.values(bySku).forEach(derive);
+  const skus = SKUS.map(s => s.sku).filter(s => bySku[s]);
+  const days = DAYS.filter(d => d >= state.from && d <= state.to);
+  const unfiltered = state.cat === 'all' && state.sku === 'all';
+  const general = DATA.general.filter(g => g.d >= state.from && g.d <= state.to);
+  const genTotal = d3.sum(general, g => g.sum);
+  // ABC по выручке
+  const sorted = skus.slice().sort((a, b) => bySku[b].netRev - bySku[a].netRev);
+  const totRev = d3.sum(sorted, s => bySku[s].netRev); let cum = 0; const abc = {};
+  sorted.forEach(s => { const prev = cum; cum += bySku[s].netRev; abc[s] = totRev <= 0 ? 'C' : prev / totRev < 0.8 ? 'A' : prev / totRev < 0.95 ? 'B' : 'C'; });
+  return {cells, total, bySku, byDay, bySkuDay, skus, days, unfiltered, general, genTotal, abc};
+}
+
+/* ---------- отрисовка ---------- */
+function render() {
+  syncControls();
+  const S = compute();
+  const per = dayLbl(state.from) + '–' + dayLbl(state.to) + '.' + state.to.slice(0, 4);
+  $('#subtitle').textContent = 'Еженедельный отчёт маркетплейса · ' + per + ' · ' + (state.sku !== 'all' ? state.sku : state.cat !== 'all' ? state.cat : 'все артикулы');
+  $('#foot').textContent = 'Источник: ' + DATA.source + ' (' + int(DATA.rowsInSource) + ' строк). Данные учебные, сгенерированы для практики. Себестоимость в отчёте отсутствует, прибыль не рассчитывается.';
+  renderKpis(S); renderTrend(S); renderDonut(S); renderMultiples(S); renderWaterfall(S);
+  renderBuyout(S); renderUnit(S); renderProblems(S); renderGeneral(S); renderTable(S);
+}
+
+function renderKpis(S) {
+  const t = S.total;
+  const pay = S.unfiltered ? t.payGoods - S.genTotal : t.payGoods;
+  const items = [
+    ['Выручка', rub(t.rev), 'продажи до возвратов'],
+    ['К перечислению', rub(pay), S.unfiltered ? 'после всех удержаний' : 'по товарам, без общих расходов'],
+    ['Продано', int(t.qty) + ' шт', 'возвратов: ' + int(t.retQty) + ' шт'],
+    ['Процент выкупа', pct(t.buyout), int(t.deliv) + ' доставок покупателям'],
+    ['Средний чек', t.qty ? rub(t.rev / t.qty) : '—', 'за одну продажу'],
+    ['Удержано маркетплейсом', rub(t.netRev - pay), t.netRev ? pct((t.netRev - pay) / t.netRev) + ' от выручки за вычетом возвратов' : '—'],
+  ];
+  $('#kpis').replaceChildren(...items.map(([l, v, h]) => {
+    const d = document.createElement('div'); d.className = 'kpi';
+    d.innerHTML = '<div class="kpi-l"></div><div class="kpi-v"></div><div class="kpi-h"></div>';
+    d.children[0].textContent = l; d.children[1].textContent = v; d.children[2].textContent = h; return d;
+  }));
+}
+
+function emptyMsg(el, text) { el.replaceChildren(); const p = document.createElement('p'); p.className = 'note'; p.style.margin = '0'; p.textContent = text; el.append(p); }
+
+function renderTrend(S) {
+  const el = $('#c-trend'); el.replaceChildren();
+  $('#h-trend').textContent = state.metric === 'rev' ? 'Динамика продаж, ₽' : 'Динамика продаж, шт';
+  $('#n-trend').textContent = 'Сумма по выбранным артикулам за каждый день';
+  const days = S.days; if (!days.length) return emptyMsg(el, 'Нет данных за период');
+  const W = el.clientWidth || 500, H = 240, m = {t: 22, r: 20, b: 26, l: 60};
+  const pts = days.map(d => ({d, v: S.byDay[d] ? mval(S.byDay[d]) : 0}));
+  const x = d3.scalePoint(days, [m.l, W - m.r]).padding(days.length === 1 ? 0.5 : 0);
+  const y = d3.scaleLinear([0, d3.max(pts, p => p.v) * 1.12 || 1], [H - m.b, m.t]).nice();
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Продажи по дням');
+  svg.append('g').attr('class', 'gridline').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - m.l - m.r)).tickFormat(''));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(maxis)).call(g => g.select('.domain').remove()).call(g => g.selectAll('line').remove());
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickFormat(d => dayLbl(d) + ' ' + wd(d)).tickSize(0).tickPadding(8)).call(g => g.select('.domain').remove());
+  const acc = css('--accent');
+  svg.append('path').datum(pts).attr('fill', acc).attr('fill-opacity', 0.12).attr('d', d3.area().x(p => x(p.d)).y0(H - m.b).y1(p => y(p.v)).curve(d3.curveMonotoneX));
+  svg.append('path').datum(pts).attr('fill', 'none').attr('stroke', acc).attr('stroke-width', 2).attr('d', d3.line().x(p => x(p.d)).y(p => y(p.v)).curve(d3.curveMonotoneX));
+  const last = pts[pts.length - 1];
+  svg.append('circle').attr('cx', x(last.d)).attr('cy', y(last.v)).attr('r', 4.5).attr('fill', acc).attr('stroke', css('--panel')).attr('stroke-width', 2);
+  const best = pts.reduce((a, b) => b.v > a.v ? b : a);
+  svg.append('text').attr('class', 'val').attr('x', x(best.d)).attr('y', y(best.v) - 10).attr('text-anchor', x(best.d) > W - 60 ? 'end' : x(best.d) < m.l + 40 ? 'start' : 'middle').text('макс. ' + maxis(best.v));
+  const cross = svg.append('line').attr('stroke', css('--muted')).attr('stroke-dasharray', '3 3').attr('y1', m.t).attr('y2', H - m.b).style('display', 'none');
+  const hot = svg.append('circle').attr('r', 5).attr('fill', acc).attr('stroke', css('--panel')).attr('stroke-width', 2).style('display', 'none');
+  svg.append('rect').attr('x', m.l).attr('y', m.t).attr('width', W - m.l - m.r).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+    .on('mousemove', ev => {
+      const [mx] = d3.pointer(ev); const p = pts.reduce((a, b) => Math.abs(x(b.d) - mx) < Math.abs(x(a.d) - mx) ? b : a);
+      cross.style('display', null).attr('x1', x(p.d)).attr('x2', x(p.d)); hot.style('display', null).attr('cx', x(p.d)).attr('cy', y(p.v));
+      const a = S.byDay[p.d] || zero();
+      showTip(ev, dayLbl(p.d) + ', ' + wd(p.d), [['Выручка', rub(a.rev)], ['Продано', int(a.qty) + ' шт'], ['Возвраты', int(a.retQty) + ' шт']]);
+    }).on('mouseleave', () => { cross.style('display', 'none'); hot.style('display', 'none'); hideTip(); });
+}
+
+function renderDonut(S) {
+  const el = $('#c-donut'); el.replaceChildren(); const leg = $('#l-donut'); leg.replaceChildren();
+  $('#n-donut').textContent = state.metric === 'rev' ? 'Доля в выручке за период' : 'Доля в проданных штуках';
+  const items = S.skus.map(s => ({s, v: mval(S.bySku[s])})).filter(i => i.v > 0);
+  if (!items.length) return emptyMsg(el, 'Нет продаж');
+  const tot = d3.sum(items, i => i.v); const R = 100;
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${2 * R} ${2 * R}`).attr('role', 'img').attr('aria-label', 'Структура по артикулам');
+  const g = svg.append('g').attr('transform', `translate(${R},${R})`);
+  const arcs = d3.pie().value(i => i.v).sort(null).padAngle(items.length > 1 ? 0.012 : 0)(items);
+  g.selectAll('path').data(arcs).join('path').attr('d', d3.arc().innerRadius(R * 0.62).outerRadius(R - 2).cornerRadius(3))
+    .attr('fill', a => color(a.data.s)).attr('stroke', css('--panel')).attr('stroke-width', 1)
+    .on('mousemove', (ev, a) => showTip(ev, a.data.s + ' · ' + SKU[a.data.s].name, [['Значение', mfmt(a.data.v)], ['Доля', pct(a.data.v / tot)]])).on('mouseleave', hideTip);
+  g.append('text').attr('class', 'val').attr('text-anchor', 'middle').attr('dy', '-0.1em').style('font-size', '15px').text(state.metric === 'rev' ? rubK(tot) : int(tot));
+  g.append('text').attr('text-anchor', 'middle').attr('dy', '1.3em').text(state.metric === 'rev' ? '₽ всего' : 'шт всего');
+  items.sort((a, b) => b.v - a.v).forEach(i => {
+    const li = document.createElement('li');
+    li.innerHTML = '<span class="sw"></span><span class="nm"></span><span class="v"></span><span class="p"></span>';
+    li.children[0].style.background = color(i.s); li.children[1].textContent = i.s + ' · ' + SKU[i.s].name; li.children[1].title = SKU[i.s].name;
+    li.children[2].textContent = mfmt(i.v); li.children[3].textContent = pct(i.v / tot); leg.append(li);
+  });
+}
+
+function renderMultiples(S) {
+  const el = $('#c-mult'); el.replaceChildren();
+  $('#n-mult').textContent = (state.metric === 'rev' ? 'Выручка, ₽' : 'Штуки') + ' по дням. Общая шкала для всех артикулов — высоту столбцов можно сравнивать';
+  if (!S.skus.length) return emptyMsg(el, 'Нет данных');
+  const days = S.days; const max = d3.max(S.skus, s => d3.max(days, d => S.bySkuDay[s][d] ? mval(S.bySkuDay[s][d]) : 0)) || 1;
+  S.skus.forEach(s => {
+    const box = document.createElement('div'); box.className = 'mini';
+    const h = document.createElement('h3'); const dot = document.createElement('span'); dot.className = 'dot'; dot.style.background = color(s);
+    const nm = document.createElement('span'); nm.textContent = s; h.append(dot, nm);
+    const meta = document.createElement('div'); meta.className = 'meta'; meta.textContent = SKU[s].name + ' · итого ' + mfmt(mval(S.bySku[s]));
+    const c = document.createElement('div'); c.className = 'chart'; box.append(h, meta, c); el.append(box);
+    const W = c.clientWidth || 220, H = 120, m = {t: 8, r: 4, b: 20, l: 4};
+    const x = d3.scaleBand(days, [m.l, W - m.r]).padding(0.25); const y = d3.scaleLinear([0, max], [H - m.b, m.t]);
+    const svg = d3.select(c).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Продажи ' + s + ' по дням');
+    svg.append('line').attr('x1', m.l).attr('x2', W - m.r).attr('y1', H - m.b).attr('y2', H - m.b).attr('stroke', css('--line'));
+    const vals = days.map(d => ({d, v: S.bySkuDay[s][d] ? mval(S.bySkuDay[s][d]) : 0, a: S.bySkuDay[s][d] || zero()}));
+    svg.selectAll('path.bar').data(vals).join('path').attr('class', 'bar').attr('fill', color(s))
+      .attr('d', p => roundTop(x(p.d), y(p.v), x.bandwidth(), H - m.b - y(p.v), 3));
+    svg.selectAll('text.x').data(days).join('text').attr('x', d => x(d) + x.bandwidth() / 2).attr('y', H - 6).attr('text-anchor', 'middle').style('font-size', '10px').text(d => wd(d));
+    svg.selectAll('rect.hit').data(vals).join('rect').attr('x', p => x(p.d) - x.step() * x.paddingInner() / 2).attr('width', x.step()).attr('y', m.t).attr('height', H - m.t - m.b).attr('fill', 'transparent')
+      .on('mousemove', (ev, p) => showTip(ev, s + ' · ' + dayLbl(p.d) + ', ' + wd(p.d), [['Выручка', rub(p.a.rev)], ['Продано', int(p.a.qty) + ' шт'], ['Возвраты', int(p.a.retQty) + ' шт']])).on('mouseleave', hideTip);
+  });
+}
+function roundTop(x, y, w, h, r) {
+  if (h <= 0) return ''; r = Math.min(r, h, w / 2);
+  return `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h}Z`;
+}
+
+function renderWaterfall(S) {
+  const el = $('#c-wf'); el.replaceChildren(); const t = S.total;
+  const steps = [['Выручка', t.rev, 'total'], ['Возвраты', -t.retSum], ['Комиссия', -t.comm], ['Логистика', -t.log], ['Штрафы', -t.fine]];
+  if (S.unfiltered) {
+    const g = {}; S.general.forEach(r => g[r.item] = (g[r.item] || 0) + r.sum);
+    Object.entries(g).sort((a, b) => b[1] - a[1]).forEach(([k, v]) => steps.push([k, -v]));
+  }
+  const pay = S.unfiltered ? t.payGoods - S.genTotal : t.payGoods;
+  steps.push([S.unfiltered ? 'На счёт' : 'К перечислению', pay, 'total']);
+  $('#n-wf').textContent = S.unfiltered ? 'Каждая ступень — сколько удержал маркетплейс. Итог совпадает с суммой к перечислению по отчёту' : 'Выбран фильтр: общие расходы без привязки к артикулу не вычитаются';
+  let run = 0; const bars = steps.map(([k, v, type]) => {
+    if (type === 'total') { const b = {k, v, y0: 0, y1: v, type}; run = v; return b; }
+    const b = {k, v, y0: run, y1: run + v, type: v < 0 ? 'neg' : 'pos'}; run += v; return b;
+  });
+  const W = el.clientWidth || 800, H = 260, m = {t: 22, r: 8, b: 40, l: 70};
+  const x = d3.scaleBand(bars.map(b => b.k), [m.l, W - m.r]).padding(0.28);
+  const y = d3.scaleLinear([Math.min(0, d3.min(bars, b => Math.min(b.y0, b.y1))), d3.max(bars, b => Math.max(b.y0, b.y1)) * 1.08], [H - m.b, m.t]).nice();
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Каскад от выручки к деньгам на счёте');
+  svg.append('g').attr('class', 'gridline').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickSize(-(W - m.l - m.r)).tickFormat(''));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(${m.l},0)`).call(d3.axisLeft(y).ticks(4).tickFormat(rubK)).call(g => g.select('.domain').remove()).call(g => g.selectAll('line').remove());
+  const narrow = x.bandwidth() < 46;
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).tickSize(0).tickPadding(8)).call(g => g.select('.domain').attr('stroke', css('--line')))
+    .selectAll('text').attr('class', 'lbl').style('font-size', narrow ? '9px' : '11px').each(function () { wrapText(d3.select(this), x.step() - 4); });
+  const fill = b => b.type === 'total' ? css('--accent') : b.type === 'neg' ? css('--neg') : css('--s3');
+  bars.forEach((b, i) => {
+    if (i < bars.length - 1) { const nx = bars[i + 1]; const ly = y(b.type === 'total' ? b.v : b.y1);
+      svg.append('line').attr('x1', x(b.k) + x.bandwidth()).attr('x2', x(nx.k)).attr('y1', ly).attr('y2', ly).attr('stroke', css('--muted')).attr('stroke-dasharray', '2 2'); }
+  });
+  svg.selectAll('rect.b').data(bars).join('rect').attr('class', 'b').attr('x', b => x(b.k)).attr('width', x.bandwidth())
+    .attr('y', b => y(Math.max(b.y0, b.y1))).attr('height', b => Math.max(1, Math.abs(y(b.y0) - y(b.y1)))).attr('rx', 3).attr('fill', fill)
+    .on('mousemove', (ev, b) => showTip(ev, b.k, [['Сумма', rub(b.v)], ['От выручки', pct(Math.abs(b.v) / (t.rev || 1))]])).on('mouseleave', hideTip);
+  if (!narrow || W > 600) svg.selectAll('text.v').data(bars).join('text').attr('class', 'val').attr('x', b => x(b.k) + x.bandwidth() / 2).attr('y', b => y(Math.max(b.y0, b.y1)) - 6)
+    .attr('text-anchor', 'middle').style('font-size', narrow ? '9px' : '11px').text(b => (b.type === 'neg' ? '−' : '') + rubK(Math.abs(b.v)));
+}
+function wrapText(sel, width) {
+  const words = sel.text().split(/\s+/); sel.text(null); let line = [], tsp = sel.append('tspan').attr('x', 0).attr('dy', 0), n = 0;
+  words.forEach(w => { line.push(w); tsp.text(line.join(' ')); if (tsp.node().getComputedTextLength() > width && line.length > 1) { line.pop(); tsp.text(line.join(' ')); line = [w]; n++; tsp = sel.append('tspan').attr('x', 0).attr('dy', '1.1em').text(w); } });
+}
+
+function renderBuyout(S) {
+  const el = $('#c-buy'); el.replaceChildren();
+  const items = S.skus.map(s => ({s, v: S.bySku[s].buyout, a: S.bySku[s]})).filter(i => isFinite(i.v)).sort((a, b) => a.v - b.v);
+  if (!items.length) return emptyMsg(el, 'Нет доставок');
+  const W = el.clientWidth || 500, rowH = 28, m = {t: 6, r: 52, b: 22, l: Math.min(130, W * 0.32)}, H = m.t + m.b + rowH * items.length;
+  const x = d3.scaleLinear([0, 1], [m.l, W - m.r]); const y = d3.scaleBand(items.map(i => i.s), [m.t, H - m.b]).padding(0.3);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Процент выкупа по артикулам');
+  svg.append('g').attr('class', 'gridline').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(5).tickSize(-(H - m.t - m.b)).tickFormat(''));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(5).tickFormat(d3.format('.0%')).tickSize(0).tickPadding(6)).call(g => g.select('.domain').remove());
+  svg.append('line').attr('x1', x(0.7)).attr('x2', x(0.7)).attr('y1', m.t).attr('y2', H - m.b).attr('stroke', css('--fg2')).attr('stroke-dasharray', '4 3');
+  svg.append('text').attr('x', x(0.7) + 4).attr('y', m.t + 8).style('font-size', '10px').text('70%');
+  svg.selectAll('text.n').data(items).join('text').attr('class', 'lbl').attr('x', m.l - 8).attr('y', i => y(i.s) + y.bandwidth() / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text(i => i.s);
+  svg.selectAll('path.b').data(items).join('path').attr('class', 'b').attr('fill', i => i.v < 0.7 ? css('--serious') : css('--accent'))
+    .attr('d', i => roundRight(x(0), y(i.s), x(i.v) - x(0), y.bandwidth(), 4))
+    .on('mousemove', (ev, i) => showTip(ev, i.s + ' · ' + SKU[i.s].name, [['Выкуп', pct(i.v)], ['Доставлено', int(i.a.deliv) + ' шт'], ['Выкуплено', int(i.a.qty) + ' шт'], ['Отказы', int(i.a.back) + ' шт']])).on('mouseleave', hideTip);
+  svg.selectAll('text.v').data(items).join('text').attr('class', 'val').attr('x', i => x(i.v) + 6).attr('y', i => y(i.s) + y.bandwidth() / 2).attr('dy', '0.35em').text(i => (i.v < 0.7 ? '⚠ ' : '') + pct(i.v));
+}
+function roundRight(x, y, w, h, r) { if (w <= 0) return ''; r = Math.min(r, w, h / 2); return `M${x},${y}H${x + w - r}Q${x + w},${y} ${x + w},${y + r}V${y + h - r}Q${x + w},${y + h} ${x + w - r},${y + h}H${x}Z`; }
+
+function renderUnit(S) {
+  const el = $('#c-unit'); el.replaceChildren(); const leg = $('#l-unit'); leg.replaceChildren();
+  const parts = [['pay', 'Остаётся продавцу', '--s1'], ['comm', 'Комиссия', '--s2'], ['log', 'Логистика', '--s3'], ['fine', 'Штрафы', '--s4']];
+  parts.forEach(([, n, c]) => { const li = document.createElement('li'); li.innerHTML = '<span class="sw"></span><span class="nm"></span>'; li.children[0].style.background = css(c); li.children[1].textContent = n; leg.append(li); });
+  const items = S.skus.map(s => { const a = S.bySku[s]; const u = a.netQty || 0; if (u <= 0) return null;
+    const price = a.netRev / u, comm = a.comm / u, log = a.log / u, fine = a.fine / u; return {s, price, comm, log, fine, pay: price - comm - log - fine}; }).filter(Boolean).sort((a, b) => a.pay / a.price - b.pay / b.price);
+  if (!items.length) return emptyMsg(el, 'Нет продаж');
+  const W = el.clientWidth || 500, rowH = 30, m = {t: 4, r: 70, b: 22, l: Math.min(130, W * 0.32)}, H = m.t + m.b + rowH * items.length;
+  const x = d3.scaleLinear([0, d3.max(items, i => i.price) * 1.02], [m.l, W - m.r]).nice(); const y = d3.scaleBand(items.map(i => i.s), [m.t, H - m.b]).padding(0.28);
+  const svg = d3.select(el).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img').attr('aria-label', 'Юнит-экономика по артикулам');
+  svg.append('g').attr('class', 'gridline').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(4).tickSize(-(H - m.t - m.b)).tickFormat(''));
+  svg.append('g').attr('class', 'axis').attr('transform', `translate(0,${H - m.b})`).call(d3.axisBottom(x).ticks(4).tickFormat(v => int(v) + ' ₽').tickSize(0).tickPadding(6)).call(g => g.select('.domain').remove());
+  svg.selectAll('text.n').data(items).join('text').attr('class', 'lbl').attr('x', m.l - 8).attr('y', i => y(i.s) + y.bandwidth() / 2).attr('dy', '0.35em').attr('text-anchor', 'end').text(i => i.s);
+  items.forEach(i => {
+    let x0 = 0; const segs = parts.map(([k, n, c]) => { const w = Math.max(0, i[k]); const s = {k, n, c, x0, w, v: i[k]}; x0 += w; return s; }).filter(s => s.w > 0);
+    segs.forEach((s, j) => svg.append('rect').attr('x', x(s.x0) + (j ? 1 : 0)).attr('y', y(i.s)).attr('width', Math.max(0, x(s.x0 + s.w) - x(s.x0) - (j ? 1 : 0))).attr('height', y.bandwidth())
+      .attr('rx', j === segs.length - 1 ? 3 : 0).attr('fill', css(s.c))
+      .on('mousemove', ev => showTip(ev, i.s + ' · за 1 шт', [['Средняя цена', rub(i.price)], ['Комиссия', rub(i.comm)], ['Логистика', rub(i.log)], ['Штрафы', rub(i.fine)], ['Остаётся продавцу', rub(i.pay) + ' (' + pct(i.pay / i.price) + ')']])).on('mouseleave', hideTip));
+    svg.append('text').attr('class', 'val').attr('x', x(Math.max(i.price, x0)) + 6).attr('y', y(i.s) + y.bandwidth() / 2).attr('dy', '0.35em').text(rub(i.pay));
+  });
+}
+
+function renderProblems(S) {
+  const ul = $('#problems'); ul.replaceChildren(); const out = [];
+  S.skus.forEach(s => {
+    const a = S.bySku[s]; const nm = s + ' · ' + SKU[s].name; const share = a.netRev ? a.payGoods / a.netRev : 0;
+    if (a.netRev > 0 && share < 0.45) out.push(['crit', 'Критично', nm, 'Продавцу остаётся только ' + pct(share) + ' выручки: ' + rub(a.payGoods) + ' из ' + rub(a.netRev) + '. После себестоимости вероятен убыток.', 3]);
+    if (a.buyout < 0.7) out.push(['serious', 'Выкуп', nm, 'Выкуп ' + pct(a.buyout) + ': ' + int(a.back) + ' отказов из ' + int(a.deliv) + ' доставок. Обратная логистика оплачивается продавцом.', 2]);
+    if (a.netRev > 0 && a.log / a.netRev > 0.2) out.push(['warn', 'Логистика', nm, 'Логистика съедает ' + pct(a.log / a.netRev) + ' выручки (' + rub(a.log) + ').', 1]);
+    if (a.negComm > 0) out.push(['warn', 'Проверить', nm, 'В ' + int(a.negComm) + ' продажах комиссия отрицательная — маркетплейс доплатил. Стоит сверить с актом.', 1]);
+    if (a.fine > 0) out.push(['serious', 'Штраф', nm, 'Штраф ' + rub(a.fine) + ' за период.', 2]);
+  });
+  out.sort((a, b) => b[4] - a[4]);
+  if (!out.length) out.push(['ok', 'В норме', 'Проблем не найдено', 'По выбранным артикулам выкуп, логистика и комиссия в пределах нормы.', 0]);
+  out.forEach(([cls, chip, t, d]) => {
+    const li = document.createElement('li'); li.innerHTML = '<span class="chip"></span><div><b></b><div class="d"></div></div>';
+    li.children[0].className = 'chip ' + cls; li.children[0].textContent = chip; li.querySelector('b').textContent = t; li.querySelector('.d').textContent = d; ul.append(li);
+  });
+}
+
+function renderGeneral(S) {
+  const t = $('#t-gen'); t.replaceChildren(); const g = {};
+  S.general.forEach(r => (g[r.item] ||= []).push(r));
+  const th = document.createElement('thead'); th.innerHTML = '<tr><th class="l">Статья</th><th>Начислений</th><th>Сумма</th></tr>'; t.append(th);
+  const tb = document.createElement('tbody');
+  Object.entries(g).sort((a, b) => d3.sum(b[1], r => r.sum) - d3.sum(a[1], r => r.sum)).forEach(([k, rs]) => {
+    const tr = document.createElement('tr'); const sum = d3.sum(rs, r => r.sum);
+    [k, int(rs.length), (sum < 0 ? '+' : '−') + rub(Math.abs(sum))].forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; if (i === 2) td.className = sum < 0 ? 'pos' : 'negv'; tr.append(td); });
+    tb.append(tr);
+  });
+  t.append(tb);
+  const tf = document.createElement('tfoot'); const tr = document.createElement('tr');
+  ['Итого', '', '−' + rub(S.genTotal)].forEach(v => { const td = document.createElement('td'); td.textContent = v; tr.append(td); }); tf.append(tr); t.append(tf);
+}
+
+const open = new Set();
+function renderTable(S) {
+  const t = $('#t-sku'); t.replaceChildren();
+  const cols = [['Артикул', 'l'], ['Название', 'l'], ['ABC', 'l'], ['Продано, шт'], ['Выручка'], ['Возвраты'], ['Комиссия'], ['Логистика'], ['Штрафы'], ['К перечислению'], ['% от выручки'], ['Выкуп']];
+  const th = document.createElement('thead'); const hr = document.createElement('tr');
+  cols.forEach(([n, c]) => { const h = document.createElement('th'); h.textContent = n; if (c) h.className = c; hr.append(h); }); th.append(hr); t.append(th);
+  const tb = document.createElement('tbody');
+  const order = S.skus.slice().sort((a, b) => S.bySku[b].netRev - S.bySku[a].netRev);
+  order.forEach(s => {
+    const a = S.bySku[s]; const tr = document.createElement('tr'); tr.className = 'main'; tr.tabIndex = 0; tr.setAttribute('aria-expanded', open.has(s));
+    const vals = [s, SKU[s].name, S.abc[s], int(a.qty), rub(a.rev), '−' + rub(a.retSum), '−' + rub(a.comm), '−' + rub(a.log), a.fine ? '−' + rub(a.fine) : '—', rub(a.payGoods), pct(a.netRev ? a.payGoods / a.netRev : NaN), pct(a.buyout)];
+    vals.forEach((v, i) => { const td = document.createElement('td'); if (cols[i][1]) td.className = cols[i][1];
+      if (i === 0) { const c = document.createElement('span'); c.className = 'caret'; c.textContent = '›'; const d = document.createElement('span'); d.className = 'dot'; d.style.cssText = 'display:inline-block;margin-right:6px;vertical-align:middle;background:' + color(s); td.append(c, d, document.createTextNode(v)); }
+      else if (i === 2) { const b = document.createElement('span'); b.className = 'abc'; b.textContent = v; td.append(b); }
+      else td.textContent = v; tr.append(td); });
+    const det = document.createElement('tr'); det.className = 'detail'; det.hidden = !open.has(s);
+    const dtd = document.createElement('td'); dtd.colSpan = cols.length; dtd.append(detail(S, s)); det.append(dtd);
+    const toggle = () => { open.has(s) ? open.delete(s) : open.add(s); tr.setAttribute('aria-expanded', open.has(s)); det.hidden = !open.has(s); };
+    tr.addEventListener('click', toggle); tr.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
+    tb.append(tr, det);
+  });
+  t.append(tb);
+  const T = S.total; const tf = document.createElement('tfoot'); const fr = document.createElement('tr');
+  ['Итого', '', '', int(T.qty), rub(T.rev), '−' + rub(T.retSum), '−' + rub(T.comm), '−' + rub(T.log), T.fine ? '−' + rub(T.fine) : '—', rub(T.payGoods), pct(T.netRev ? T.payGoods / T.netRev : NaN), pct(T.buyout)]
+    .forEach((v, i) => { const td = document.createElement('td'); td.textContent = v; if (cols[i][1]) td.className = cols[i][1]; fr.append(td); });
+  tf.append(fr); t.append(tf);
+}
+function detail(S, s) {
+  const a = S.bySku[s]; const wrap = document.createElement('div'); wrap.className = 'detail-grid';
+  const mk = (title, head, rows) => { const box = document.createElement('div'); const h = document.createElement('h4'); h.textContent = title; const tb = document.createElement('table');
+    const thd = document.createElement('tr'); head.forEach((x, i) => { const th = document.createElement('th'); th.textContent = x; if (!i) th.className = 'l'; thd.append(th); }); tb.append(thd);
+    rows.forEach(r => { const tr = document.createElement('tr'); r.forEach((x, i) => { const td = document.createElement('td'); if (Array.isArray(x)) { td.textContent = x[0]; td.className = x[1]; } else td.textContent = x; if (!i) td.classList.add('l'); tr.append(td); }); tb.append(tr); });
+    box.append(h, tb); return box; };
+  const share = v => pct(a.rev ? v / a.rev : NaN);
+  wrap.append(mk('Доходы и расходы', ['Статья', 'Сумма', 'От выручки'], [
+    ['Продажи (' + int(a.qty) + ' шт)', [rub(a.rev), 'pos'], '100%'],
+    ['Возвраты (' + int(a.retQty) + ' шт)', ['−' + rub(a.retSum), 'negv'], share(a.retSum)],
+    ['Комиссия маркетплейса с НДС', ['−' + rub(a.comm), 'negv'], share(a.comm)],
+    ['Логистика к покупателю и обратно', ['−' + rub(a.log), 'negv'], share(a.log)],
+    ['Штрафы', [a.fine ? '−' + rub(a.fine) : '—', a.fine ? 'negv' : ''], share(a.fine)],
+    ['К перечислению', [rub(a.payGoods), ''], share(a.payGoods)],
+  ]));
+  wrap.append(mk('По дням', ['День', 'Продано', 'Выручка', 'Логистика'], S.days.map(d => { const c = S.bySkuDay[s][d] || zero(); return [dayLbl(d) + ', ' + wd(d), int(c.qty), rub(c.rev), rub(c.log)]; })));
+  wrap.append(mk('Показатели', ['Показатель', 'Значение'], [
+    ['Категория', SKU[s].cat], ['Доставок покупателям', int(a.deliv)], ['Отказов при получении', int(a.back)], ['Процент выкупа', pct(a.buyout)],
+    ['Средняя цена продажи', a.qty ? rub(a.rev / a.qty) : '—'], ['Остаётся с 1 шт', a.netQty > 0 ? rub(a.payGoods / a.netQty) : '—'], ['Класс ABC', S.abc[s]],
+  ]));
+  return wrap;
+}
+
+themeLabel(); render();
+let rt; window.addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(render, 150); });
+</script>
+
+</body>
+</html>
