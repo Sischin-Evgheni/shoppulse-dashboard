@@ -4,6 +4,7 @@ Interaktives Verkaufs-Dashboard für Marktplatz-Händler (z. B. Wildberries / Oz
 Aus einem wöchentlichen Verkaufsbericht (Excel, über 2.000 Einzelbuchungen) wird eine übersichtliche Auswertung erstellt.
 
 > **Hinweis:** Die Daten im Ordner `data/` sind **generierte Übungsdaten**, keine echten Verkäufe.
+> Im Dashboard werden alle Beträge in **Euro** angezeigt (Umrechnung zum festen Demo-Kurs 1 € = 100 ₽; die Excel-Rohdaten sind in Rubel).
 
 ## Funktionen
 - Umsatzentwicklung pro Tag und pro Artikel
